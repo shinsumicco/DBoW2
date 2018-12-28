@@ -11,8 +11,8 @@
 #include <string>
 #include <sstream>
 
-#include "FClass.h"
-#include "FSurf64.h"
+#include "DBoW2/FClass.h"
+#include "DBoW2/FSurf64.h"
 
 using namespace std;
 

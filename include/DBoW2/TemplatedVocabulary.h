@@ -17,11 +17,12 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
+
 #include <opencv2/core.hpp>
 
-#include "FeatureVector.h"
-#include "BowVector.h"
-#include "ScoringObject.h"
+#include "DBoW2/FeatureVector.h"
+#include "DBoW2/BowVector.h"
+#include "DBoW2/ScoringObject.h"
 
 namespace DBoW2 {
 
@@ -1401,11 +1402,14 @@ void TemplatedVocabulary<TDescriptor, F>::loadFromTextFile(const std::string& fi
   {
     std::string s_node;
     getline(ifs, s_node);
+    if(s_node == "") {
+      continue;
+    }
     std::stringstream ss_node;
     ss_node << s_node;
 
     const int n_id = m_nodes.size();
-    m_nodes.resize(m_nodes.size()+1);
+    m_nodes.resize(m_nodes.size() + 1);
     m_nodes.at(n_id).id = n_id;
 
     int p_id;
@@ -1427,7 +1431,7 @@ void TemplatedVocabulary<TDescriptor, F>::loadFromTextFile(const std::string& fi
 
     ss_node >> m_nodes.at(n_id).weight;
 
-    if(0 < is_leaf)
+    if(static_cast<bool>(is_leaf))
     {
       const int w_id = m_words.size();
       m_words.resize(w_id + 1);
@@ -1457,8 +1461,10 @@ void TemplatedVocabulary<TDescriptor, F>::saveToTextFile(const std::string& file
 
   ofs << m_k << " " << m_L << " " << " " << m_scoring << " " << m_weighting << std::endl;
 
-  for(const Node& node : m_nodes)
+  for(size_t i = 1; i < m_nodes.size(); ++i)
   {
+    const Node& node = m_nodes.at(i);
+
     ofs << node.parent << " ";
 
     if(node.isLeaf())
@@ -1502,13 +1508,13 @@ void TemplatedVocabulary<TDescriptor, F>::loadFromBinaryFile(const std::string& 
   m_words.reserve(std::pow(static_cast<double>(m_k), static_cast<double>(m_L) + 1.0));
 
   m_nodes.clear();
-  m_nodes.resize(n_nodes + 1);
+  m_nodes.resize(n_nodes);
   m_nodes.at(0).id = 0;
 
   char* buf = new char[node_size];
-  int n_id = 1;
+  unsigned int n_id = 1;
 
-  while (!ifs.eof())
+  while(!ifs.eof())
   {
     ifs.read(buf, node_size);
     m_nodes.at(n_id).id = n_id;
@@ -1519,9 +1525,9 @@ void TemplatedVocabulary<TDescriptor, F>::loadFromBinaryFile(const std::string& 
     m_nodes.at(n_id).descriptor = cv::Mat(1, F::L, CV_8U);
 
     memcpy(m_nodes.at(n_id).descriptor.data, buf + 4, F::L);
-    m_nodes.at(n_id).weight = *static_cast<float*>(buf + 4 + F::L);
+    m_nodes.at(n_id).weight = *reinterpret_cast<float*>(buf + 4 + F::L);
 
-    if (buf[8 + F::L])
+    if(buf[8 + F::L])
     {
       const int w_id = m_words.size();
       m_words.resize(w_id + 1);
@@ -1534,6 +1540,9 @@ void TemplatedVocabulary<TDescriptor, F>::loadFromBinaryFile(const std::string& 
     }
 
     ++n_id;
+    if(n_id == n_nodes) {
+      break;
+    }
   }
 
   ifs.close();
@@ -1564,8 +1573,10 @@ void TemplatedVocabulary<TDescriptor, F>::saveToBinaryFile(const std::string& fi
   ofs.write((char*)&m_scoring, sizeof(m_scoring));
   ofs.write((char*)&m_weighting, sizeof(m_weighting));
 
-  for(const Node& node : m_nodes)
+  for(size_t i = 1; i < n_nodes; ++i)
   {
+    const Node& node = m_nodes.at(i);
+
     ofs.write((char*)&node.parent, sizeof(node.parent));
     ofs.write((char*)node.descriptor.data, F::L);
 

@@ -13,7 +13,7 @@
 #include <stdint.h>
 #include <limits.h>
 
-#include "FORB.h"
+#include "DBoW2/FORB.h"
 
 using namespace std;
 

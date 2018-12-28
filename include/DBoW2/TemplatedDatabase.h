@@ -17,11 +17,11 @@
 #include <list>
 #include <set>
 
-#include "TemplatedVocabulary.h"
-#include "QueryResults.h"
-#include "ScoringObject.h"
-#include "BowVector.h"
-#include "FeatureVector.h"
+#include "DBoW2/TemplatedVocabulary.h"
+#include "DBoW2/QueryResults.h"
+#include "DBoW2/ScoringObject.h"
+#include "DBoW2/BowVector.h"
+#include "DBoW2/FeatureVector.h"
 
 namespace DBoW2 {
 

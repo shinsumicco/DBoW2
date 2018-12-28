@@ -11,7 +11,7 @@
 #include <string>
 #include <sstream>
 
-#include "FBrief.h"
+#include "DBoW2/FBrief.h"
 
 using namespace std;
 

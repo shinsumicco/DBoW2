@@ -10,9 +10,10 @@
 #ifndef __D_T_FCLASS__
 #define __D_T_FCLASS__
 
-#include <opencv2/core.hpp>
 #include <vector>
 #include <string>
+
+#include <opencv2/core.hpp>
 
 namespace DBoW2 {
 

@@ -10,11 +10,12 @@
 #ifndef __D_T_F_SURF_64__
 #define __D_T_F_SURF_64__
 
-#include <opencv2/core.hpp>
 #include <vector>
 #include <string>
 
-#include "FClass.h"
+#include <opencv2/core.hpp>
+
+#include "DBoW2/FClass.h"
 
 namespace DBoW2 {
 
