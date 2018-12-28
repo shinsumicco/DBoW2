@@ -74,4 +74,3 @@ typedef DBoW2::TemplatedDatabase<DBoW2::FBrief::TDescriptor, DBoW2::FBrief>
   BriefDatabase;
 
 #endif
-

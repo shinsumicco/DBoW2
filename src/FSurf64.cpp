@@ -112,4 +112,3 @@ void FSurf64::toMat32F(const std::vector<TDescriptor> &descriptors,
 // --------------------------------------------------------------------------
 
 } // namespace DBoW2
-

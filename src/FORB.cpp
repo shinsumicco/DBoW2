@@ -241,4 +241,3 @@ void FORB::toMat8U(const std::vector<TDescriptor> &descriptors,
 // --------------------------------------------------------------------------
 
 } // namespace DBoW2
-

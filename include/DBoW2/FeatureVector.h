@@ -54,4 +54,3 @@ public:
 } // namespace DBoW2
 
 #endif
-

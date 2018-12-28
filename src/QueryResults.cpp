@@ -61,4 +61,3 @@ void QueryResults::saveM(const std::string &filename) const
 // ---------------------------------------------------------------------------
 
 } // namespace DBoW2
-

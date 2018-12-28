@@ -202,4 +202,3 @@ inline void QueryResults::scaleScores(double factor)
 } // namespace TemplatedBoW
   
 #endif
-

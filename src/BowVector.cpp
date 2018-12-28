@@ -127,4 +127,3 @@ void BowVector::saveM(const std::string &filename, size_t W) const
 // --------------------------------------------------------------------------
 
 } // namespace DBoW2
-

@@ -92,4 +92,3 @@ class __SCORING_CLASS(DotProductScoring, false, L1);
 } // namespace DBoW2
 
 #endif
-
