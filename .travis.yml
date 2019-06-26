@@ -84,3 +84,8 @@ install:
         ..
     make -j 2
     make install
+
+script:
+  - cd ${TRAVIS_BUILD_DIR}
+  - cd build
+  - ctest -V
