@@ -2,7 +2,7 @@ language: cpp
 
 env:
   global:
-    - DEPS_DIR="${HOME}/deps"
+    - INSTALL_PREFIX=${HOME}/usr
     - EIGEN3_VERSION=3.3.4
 
 matrix:
@@ -44,10 +44,11 @@ before_install:
     mkdir -p build && cd build
     cmake \
         -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
         ..
     make -j 2
     make install
+    export Eigen3_DIR=${INSTALL_PREFIX}/share/eigen3/cmake
   - |
     cd /tmp
     wget -q https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip
@@ -57,7 +58,7 @@ before_install:
     mkdir -p build && cd build
     cmake \
         -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
         -DENABLE_CXX11=ON \
         -DBUILD_DOCS=OFF \
         -DBUILD_EXAMPLES=OFF \
@@ -71,6 +72,7 @@ before_install:
         ..
     make -j 2
     make install
+    export OpenCV_DIR=${INSTALL_PREFIX}/share/OpenCV
 
 install:
   - |
@@ -78,7 +80,7 @@ install:
     mkdir -p build && cd build
     cmake \
         -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
         ..
     make -j 2
     make install
