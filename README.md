@@ -1,6 +1,8 @@
 DBoW2
 =====
 
+[![Travis CI Status](https://api.travis-ci.org/shinsumicco/DBoW2.svg)](https://travis-ci.org/shinsumicco/DBoW2)
+
 DBoW2 is an improved version of the DBoW library, an open source C++ library for indexing and converting images into a bag-of-word representation. It implements a hierarchical tree for approximating nearest neighbours in the image feature space and creating a visual vocabulary. DBoW2 also implements an image database with inverted and direct files to index images and enabling quick queries and feature comparisons. The main differences with the previous DBoW library are:
 
 * DBoW2 classes are templated, so it can work with any type of descriptor.
