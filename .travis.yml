@@ -1,0 +1,81 @@
+language: cpp
+
+env:
+  global:
+    - DEPS_DIR="${HOME}/deps"
+    - EIGEN3_VERSION=3.3.4
+  matrix:
+    - OPENCV_VERSION=3.3.1
+    - OPENCV_VERSION=4.1.0
+
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+      addons:
+        apt:
+          update: true
+          packages:
+            build-essential
+            pkg-config
+            cmake
+            wget
+    - os: osx
+      osx_image: xcode10.2
+      addons:
+        homebrew:
+          update: true
+          packages:
+            pkg-config
+            cmake
+            git
+
+before_install:
+  - |
+    cd /tmp
+    wget -q http://bitbucket.org/eigen/eigen/get/${EIGEN3_VERSION}.tar.bz2
+    tar xf ${EIGEN3_VERSION}.tar.bz2
+    rm -rf ${EIGEN3_VERSION}.tar.bz2
+    mv eigen-eigen-* eigen-${EIGEN3_VERSION}
+    cd eigen-${EIGEN3_VERSION}
+    mkdir -p build && cd build
+    cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        ..
+    make -j 2
+    make install
+  - |
+    cd /tmp
+    wget -q https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip
+    unzip -q ${OPENCV_VERSION}.zip
+    rm -rf ${OPENCV_VERSION}.zip
+    cd opencv-${OPENCV_VERSION}
+    mkdir -p build && cd build
+    cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -DENABLE_CXX11=ON \
+        -DBUILD_DOCS=OFF \
+        -DBUILD_EXAMPLES=OFF \
+        -DBUILD_JASPER=OFF \
+        -DBUILD_OPENEXR=OFF \
+        -DBUILD_PERF_TESTS=OFF \
+        -DBUILD_TESTS=OFF \
+        -DWITH_EIGEN=ON \
+        -DWITH_FFMPEG=ON \
+        -DWITH_OPENMP=ON \
+        ..
+    make -j 2
+    make install
+
+install:
+  - |
+    cd ${TRAVIS_BUILD_DIR}
+    mkdir -p build && cd build
+    cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        ..
+    make -j 2
+    make install
