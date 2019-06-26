@@ -4,9 +4,6 @@ env:
   global:
     - DEPS_DIR="${HOME}/deps"
     - EIGEN3_VERSION=3.3.4
-  matrix:
-    - OPENCV_VERSION=3.3.1
-    - OPENCV_VERSION=4.1.0
 
 matrix:
   include:
@@ -20,6 +17,9 @@ matrix:
             pkg-config
             cmake
             wget
+      env:
+        - OPENCV_VERSION=3.3.1
+        - OPENCV_VERSION=4.1.0
     - os: osx
       osx_image: xcode10.2
       addons:
@@ -29,6 +29,9 @@ matrix:
             pkg-config
             cmake
             git
+      env:
+        - OPENCV_VERSION=3.3.1
+        - OPENCV_VERSION=4.1.0
 
 before_install:
   - |
