@@ -15,7 +15,9 @@ if(MSVC)
   else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
   endif()
-elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU"
+       OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang"
+       OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -std=c++11")
 endif()
 
