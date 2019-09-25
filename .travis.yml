@@ -1,0 +1,138 @@
+language: cpp
+
+env:
+  global:
+    - DEPS_DIR=${HOME}/deps
+    - INSTALL_PREFIX=${HOME}/usr
+    - EIGEN3_VERSION=3.3.4
+
+cache:
+  ccache: true
+  directories:
+    - ${DEPS_DIR}/eigen-${EIGEN3_VERSION}
+    - ${DEPS_DIR}/opencv-${OPENCV_VERSION}
+
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+      addons:
+        apt:
+          update: true
+          packages:
+            build-essential
+            pkg-config
+            cmake
+            wget
+      env:
+        - OPENCV_VERSION=3.3.1
+    - os: linux
+      dist: xenial
+      addons:
+        apt:
+          update: true
+          packages:
+            build-essential
+            pkg-config
+            cmake
+            wget
+      env:
+        - OPENCV_VERSION=4.1.0
+    - os: osx
+      osx_image: xcode10.2
+      addons:
+        homebrew:
+          update: true
+          packages:
+            pkg-config
+            cmake
+            git
+      env:
+        - OPENCV_VERSION=3.3.1
+    - os: osx
+      osx_image: xcode10.2
+      addons:
+        homebrew:
+          update: true
+          packages:
+            pkg-config
+            cmake
+            git
+      env:
+        - OPENCV_VERSION=4.1.0
+
+before_install:
+  - |
+    mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
+    if [ ! -d eigen-${EIGEN3_VERSION} ]; then
+        echo "download Eigen3"
+        wget -q http://bitbucket.org/eigen/eigen/get/${EIGEN3_VERSION}.tar.bz2
+        tar xf ${EIGEN3_VERSION}.tar.bz2
+        rm -rf ${EIGEN3_VERSION}.tar.bz2
+        mv eigen-eigen-* eigen-${EIGEN3_VERSION}
+    elif [ -z "$(ls eigen-${EIGEN3_VERSION})" ]; then
+        echo "redownload Eigen3"
+        rm -rf eigen-${EIGEN3_VERSION}
+        wget -q http://bitbucket.org/eigen/eigen/get/${EIGEN3_VERSION}.tar.bz2
+        tar xf ${EIGEN3_VERSION}.tar.bz2
+        rm -rf ${EIGEN3_VERSION}.tar.bz2
+        mv eigen-eigen-* eigen-${EIGEN3_VERSION}
+    fi
+    cd eigen-${EIGEN3_VERSION}
+    mkdir -p build && cd build
+    cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
+        ..
+    make -j 2
+    make install
+    export Eigen3_DIR=${INSTALL_PREFIX}/share/eigen3/cmake
+  - |
+    mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
+    if [ ! -d opencv-${OPENCV_VERSION} ]; then
+        echo "download OpenCV"
+        wget -q https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip
+        unzip -q ${OPENCV_VERSION}.zip
+        rm -rf ${OPENCV_VERSION}.zip
+    elif [ -z "$(ls opencv-${OPENCV_VERSION})" ]; then
+        echo "redownload OpenCV"
+        rm -rf opencv-${OPENCV_VERSION}
+        wget -q https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip
+        unzip -q ${OPENCV_VERSION}.zip
+        rm -rf ${OPENCV_VERSION}.zip
+    fi
+    cd opencv-${OPENCV_VERSION}
+    mkdir -p build && cd build
+    cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
+        -DENABLE_CXX11=ON \
+        -DBUILD_DOCS=OFF \
+        -DBUILD_EXAMPLES=OFF \
+        -DBUILD_JASPER=OFF \
+        -DBUILD_OPENEXR=OFF \
+        -DBUILD_PERF_TESTS=OFF \
+        -DBUILD_TESTS=OFF \
+        -DWITH_EIGEN=ON \
+        -DWITH_FFMPEG=ON \
+        -DWITH_OPENMP=ON \
+        ..
+    make -j 2
+    make install
+    export OpenCV_DIR=${INSTALL_PREFIX}/share/OpenCV
+
+install:
+  - |
+    cd ${TRAVIS_BUILD_DIR}
+    mkdir -p build && cd build
+    cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
+        ..
+    make -j 2
+    make install
+
+script:
+  - cd ${TRAVIS_BUILD_DIR}
+  - cd build
+  - ctest -V
