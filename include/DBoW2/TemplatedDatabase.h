@@ -661,15 +661,15 @@ void TemplatedDatabase<TDescriptor, F>::queryL1(const BowVector &vec,
       
     } // for each inverted row
   } // for each query word
-	
+  
   // move to vector
   ret.reserve(pairs.size());
   for(pit = pairs.begin(); pit != pairs.end(); ++pit)
   {
     ret.push_back(Result(pit->first, pit->second));
   }
-	
-  // resulting "scores" are now in [-2 best .. 0 worst]	
+  
+  // resulting "scores" are now in [-2 best .. 0 worst]  
   
   // sort vector in ascending order of score
   std::sort(ret.begin(), ret.end());
@@ -681,7 +681,7 @@ void TemplatedDatabase<TDescriptor, F>::queryL1(const BowVector &vec,
   
   // complete and scale score to [0 worst .. 1 best]
   // ||v - w||_{L1} = 2 + Sum(|v_i - w_i| - |v_i| - |w_i|) 
-  //		for all i | v_i != 0 and w_i != 0 
+  //    for all i | v_i != 0 and w_i != 0 
   // (Nister, 2006)
   // scaled_||v - w||_{L1} = 1 - 0.5 * ||v - w||_{L1}
   QueryResults::iterator qit;
@@ -741,7 +741,7 @@ void TemplatedDatabase<TDescriptor, F>::queryL2(const BowVector &vec,
       
     } // for each inverted row
   } // for each query word
-	
+  
   // move to vector
   ret.reserve(pairs.size());
   //cit = counters.begin();
@@ -749,8 +749,8 @@ void TemplatedDatabase<TDescriptor, F>::queryL2(const BowVector &vec,
   {
     ret.push_back(Result(pit->first, pit->second));// / cit->second));
   }
-	
-  // resulting "scores" are now in [-1 best .. 0 worst]	
+  
+  // resulting "scores" are now in [-1 best .. 0 worst]  
   
   // sort vector in ascending order of score
   std::sort(ret.begin(), ret.end());
@@ -762,9 +762,9 @@ void TemplatedDatabase<TDescriptor, F>::queryL2(const BowVector &vec,
 
   // complete and scale score to [0 worst .. 1 best]
   // ||v - w||_{L2} = sqrt( 2 - 2 * Sum(v_i * w_i) 
-	//		for all i | v_i != 0 and w_i != 0 )
-	// (Nister, 2006)
-	QueryResults::iterator qit;
+  //    for all i | v_i != 0 and w_i != 0 )
+  // (Nister, 2006)
+  QueryResults::iterator qit;
   for(qit = ret.begin(); qit != ret.end(); qit++) 
   {
     if(qit->Score <= -1.0) // rounding error
@@ -846,7 +846,7 @@ void TemplatedDatabase<TDescriptor, F>::queryChiSquare(const BowVector &vec,
       
     } // for each inverted row
   } // for each query word
-	
+  
   // move to vector
   ret.reserve(pairs.size());
   sit = sums.begin();
@@ -864,8 +864,8 @@ void TemplatedDatabase<TDescriptor, F>::queryChiSquare(const BowVector &vec,
   
     //ret.push_back(Result(pit->first, pit->second));
   }
-	
-  // resulting "scores" are now in [-2 best .. 0 worst]	
+  
+  // resulting "scores" are now in [-2 best .. 0 worst]  
   // we have to add +2 to the scores to obtain the chi square score
   
   // sort vector in ascending order of score
@@ -933,7 +933,7 @@ void TemplatedDatabase<TDescriptor, F>::queryKL(const BowVector &vec,
       
     } // for each inverted row
   } // for each query word
-	
+  
   // resulting "scores" are now in [-X worst .. 0 best .. X worst]
   // but we cannot make sure which ones are better without calculating
   // the complete score
@@ -1028,7 +1028,7 @@ void TemplatedDatabase<TDescriptor, F>::queryBhattacharyya(
       
     } // for each inverted row
   } // for each query word
-	
+  
   // move to vector
   ret.reserve(pairs.size());
   for(pit = pairs.begin(); pit != pairs.end(); ++pit)
@@ -1040,7 +1040,7 @@ void TemplatedDatabase<TDescriptor, F>::queryBhattacharyya(
       ret.back().bhatScore = pit->second.first;
     }
   }
-	
+  
   // scores are already in [0..1]
 
   // sort vector in descending order
@@ -1100,14 +1100,14 @@ void TemplatedDatabase<TDescriptor, F>::queryDotProduct(
       
     } // for each inverted row
   } // for each query word
-	
+  
   // move to vector
   ret.reserve(pairs.size());
   for(pit = pairs.begin(); pit != pairs.end(); ++pit)
   {
     ret.push_back(Result(pit->first, pit->second));
   }
-	
+  
   // scores are the greater the better
 
   // sort vector in descending order

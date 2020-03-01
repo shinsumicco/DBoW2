@@ -64,49 +64,49 @@ class DLL_EXPORT BowVector: public std::map<WordId, WordValue>
 {
 public:
 
-	/** 
-	 * Constructor
-	 */
-	BowVector(void);
+  /** 
+   * Constructor
+   */
+  BowVector(void);
 
-	/**
-	 * Destructor
-	 */
-	~BowVector(void);
-	
-	/**
-	 * Adds a value to a word value existing in the vector, or creates a new word with the given value
-	 * @param id word id to look for
-	 * @param v value to create the word with, or to add to existing word
-	 */
-	void addWeight(WordId id, WordValue v);
-	
-	/**
-	 * Adds a word with a value to the vector only if this does not exist yet
-	 * @param id word id to look for
-	 * @param v value to give to the word if this does not exist
-	 */
-	void addIfNotExist(WordId id, WordValue v);
+  /**
+   * Destructor
+   */
+  ~BowVector(void);
+  
+  /**
+   * Adds a value to a word value existing in the vector, or creates a new word with the given value
+   * @param id word id to look for
+   * @param v value to create the word with, or to add to existing word
+   */
+  void addWeight(WordId id, WordValue v);
+  
+  /**
+   * Adds a word with a value to the vector only if this does not exist yet
+   * @param id word id to look for
+   * @param v value to give to the word if this does not exist
+   */
+  void addIfNotExist(WordId id, WordValue v);
 
-	/**
-	 * L1-Normalizes the values in the vector 
-	 * @param norm_type norm used
-	 */
-	void normalize(LNorm norm_type);
-	
-	/**
-	 * Prints the content of the bow vector
-	 * @param out stream
-	 * @param v
-	 */
-	friend std::ostream& operator<<(std::ostream &out, const BowVector &v);
-	
-	/**
-	 * Saves the bow vector as a vector in a matlab file
-	 * @param filename
-	 * @param W number of words in the vocabulary
-	 */
-	void saveM(const std::string &filename, size_t W) const;
+  /**
+   * L1-Normalizes the values in the vector 
+   * @param norm_type norm used
+   */
+  void normalize(LNorm norm_type);
+  
+  /**
+   * Prints the content of the bow vector
+   * @param out stream
+   * @param v
+   */
+  friend std::ostream& operator<<(std::ostream &out, const BowVector &v);
+  
+  /**
+   * Saves the bow vector as a vector in a matlab file
+   * @param filename
+   * @param W number of words in the vocabulary
+   */
+  void saveM(const std::string &filename, size_t W) const;
 };
 
 } // namespace DBoW2
