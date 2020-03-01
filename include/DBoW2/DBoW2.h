@@ -14,7 +14,7 @@
 #include "DBoW2/BowVector.h"
 #include "DBoW2/FeatureVector.h"
 #include "DBoW2/QueryResults.h"
-#include "DBoW2/FBrief.h"
+#include "DBoW2/FBRIEF.h"
 #include "DBoW2/FORB.h"
 
 //! ORB Vocabulary
@@ -24,9 +24,9 @@ using OrbVocabulary = DBoW2::TemplatedVocabulary<DBoW2::FORB::TDescriptor, DBoW2
 using OrbDatabase = DBoW2::TemplatedDatabase<DBoW2::FORB::TDescriptor, DBoW2::FORB>;
 
 //! BRIEF Vocabulary
-using BriefVocabulary = DBoW2::TemplatedVocabulary<DBoW2::FBrief::TDescriptor, DBoW2::FBrief>;
+using BriefVocabulary = DBoW2::TemplatedVocabulary<DBoW2::FBRIEF::TDescriptor, DBoW2::FBRIEF>;
 
 //! BRIEF Database
-using BriefDatabase = DBoW2::TemplatedDatabase<DBoW2::FBrief::TDescriptor, DBoW2::FBrief>;
+using BriefDatabase = DBoW2::TemplatedDatabase<DBoW2::FBRIEF::TDescriptor, DBoW2::FBRIEF>;
 
 #endif

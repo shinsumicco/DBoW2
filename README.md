@@ -73,7 +73,7 @@ Two classes must be provided: `TDescriptor` is the data type of a single descrip
 
 For example, to work with ORB descriptors, `TDescriptor` is defined as `cv::Mat` (of type `CV_8UC1`), which is a single row that contains 32 8-bit values. When features are extracted from an image, a `std::vector<TDescriptor>` must be obtained. In the case of BRIEF, `TDescriptor` is defined as `boost::dynamic_bitset<>`.
 
-The `F` parameter is the name of a class that implements the functions defined in `FClass`. These functions get `TDescriptor` data and compute some result. Classes to deal with ORB and BRIEF descriptors are already included in DBoW2. (`FORB`, `FBrief`).
+The `F` parameter is the name of a class that implements the functions defined in `FClass`. These functions get `TDescriptor` data and compute some result. Classes to deal with ORB and BRIEF descriptors are already included in DBoW2. (`FORB`, `FBRIEF`).
 
 ### Predefined Vocabularies and Databases
 

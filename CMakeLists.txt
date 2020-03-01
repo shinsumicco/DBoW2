@@ -42,7 +42,7 @@ if(BUILD_DBoW2)
   # create a library
   add_library(DBoW2
     src/BowVector.cpp
-    src/FBrief.cpp
+    src/FBRIEF.cpp
     src/FeatureVector.cpp
     src/FORB.cpp
     src/QueryResults.cpp
