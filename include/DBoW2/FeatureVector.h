@@ -26,35 +26,32 @@ namespace DBoW2 {
 /**
  * Vector of nodes with indexes of local features
  */
-class DLL_EXPORT FeatureVector: public std::map<NodeId, std::vector<unsigned int> >
-{
+class DLL_EXPORT FeatureVector : public std::map<NodeId, std::vector<unsigned int>> {
 public:
-
   /**
    * Constructor
    */
-  FeatureVector(void);
-  
+  FeatureVector();
+
   /**
    * Destructor
    */
-  ~FeatureVector(void);
-  
+  ~FeatureVector();
+
   /**
    * Adds a feature to an existing node, or adds a new node with an initial
    * feature
    * @param id node id to add or to modify
    * @param i_feature index of feature to add to the given node
    */
-  void addFeature(NodeId id, unsigned int i_feature);
+  void addFeature(const NodeId id, const unsigned int i_feature);
 
   /**
    * Sends a string versions of the feature vector through the stream
    * @param out stream
    * @param v feature vector
    */
-  friend std::ostream& operator<<(std::ostream &out, const FeatureVector &v);
-    
+  friend std::ostream& operator<<(std::ostream& out, const FeatureVector& v);
 };
 
 } // namespace DBoW2
