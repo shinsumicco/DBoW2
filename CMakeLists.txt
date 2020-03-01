@@ -62,7 +62,7 @@ if(BUILD_DBoW2)
   endif()
   target_compile_options(DBoW2 PRIVATE
     $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
-      -Wall -Wextra -pedantic
+      -Wall -Wextra -pedantic $<$<CONFIG:Debug>:-Og> $<$<CONFIG:Release>:-O3>
     >)
 
   # set output properties

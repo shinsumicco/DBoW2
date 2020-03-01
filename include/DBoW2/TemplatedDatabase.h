@@ -4,7 +4,6 @@
  * Author: Dorian Galvez-Lopez
  * Description: templated database of images
  * License: see the LICENSE.txt file
- *
  */
 
 #ifndef __D_T_TEMPLATED_DATABASE__
