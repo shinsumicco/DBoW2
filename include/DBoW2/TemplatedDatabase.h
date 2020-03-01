@@ -4,9 +4,8 @@
  * Author: Dorian Galvez-Lopez
  * Description: templated database of images
  * License: see the LICENSE.txt file
- *
  */
- 
+
 #ifndef __D_T_TEMPLATED_DATABASE__
 #define __D_T_TEMPLATED_DATABASE__
 
@@ -23,26 +22,32 @@
 #include "DBoW2/BowVector.h"
 #include "DBoW2/FeatureVector.h"
 
+#ifdef _MSC_VER
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT
+#endif
+
 namespace DBoW2 {
 
 // For query functions
-static int MIN_COMMON_WORDS = 5;
+static constexpr int MIN_COMMON_WORDS = 5;
 
-/// @param TDescriptor class of descriptor
-/// @param F class of descriptor functions
+/**
+ * Generic Database
+ * @param TDescriptor class of descriptor
+ * @param F class of descriptor functions
+ */
 template<class TDescriptor, class F>
-/// Generic Database
-class TemplatedDatabase
-{
+class DLL_EXPORT TemplatedDatabase {
 public:
-
   /**
    * Creates an empty database without vocabulary
    * @param use_di a direct index is used to store feature indexes
    * @param di_levels levels to go up the vocabulary tree to select the 
    *   node id to store in the direct index when adding images
    */
-  explicit TemplatedDatabase(bool use_di = true, int di_levels = 0);
+  explicit TemplatedDatabase(const bool use_di = true, const int di_levels = 0);
 
   /**
    * Creates a database with the given vocabulary
@@ -53,38 +58,36 @@ public:
    *   node id to store in the direct index when adding images
    */
   template<class T>
-  explicit TemplatedDatabase(const T &voc, bool use_di = true, 
-    int di_levels = 0);
+  explicit TemplatedDatabase(const T& voc, const bool use_di = true, const int di_levels = 0);
 
   /**
    * Copy constructor. Copies the vocabulary too
    * @param db object to copy
    */
-  TemplatedDatabase(const TemplatedDatabase<TDescriptor, F> &db);
+  TemplatedDatabase(const TemplatedDatabase<TDescriptor, F>& db);
 
   /** 
    * Creates the database from a file
    * @param filename
    */
-  TemplatedDatabase(const std::string &filename);
+  TemplatedDatabase(const std::string& filename);
 
   /** 
    * Creates the database from a file
    * @param filename
    */
-  TemplatedDatabase(const char *filename);
+  TemplatedDatabase(const char* filename);
 
   /**
    * Destructor
    */
-  virtual ~TemplatedDatabase(void);
+  virtual ~TemplatedDatabase();
 
   /**
    * Copies the given database and its vocabulary
    * @param db database to copy
    */
-  TemplatedDatabase<TDescriptor,F>& operator=(
-    const TemplatedDatabase<TDescriptor,F> &db);
+  TemplatedDatabase<TDescriptor, F>& operator=(const TemplatedDatabase<TDescriptor, F>& db);
 
   /**
    * Sets the vocabulary to use and clears the content of the database.
@@ -92,8 +95,8 @@ public:
    * @param voc vocabulary to copy
    */
   template<class T>
-  inline void setVocabulary(const T &voc);
-  
+  inline void setVocabulary(const T& voc);
+
   /**
    * Sets the vocabulary to use and the direct index parameters, and clears
    * the content of the database
@@ -104,13 +107,13 @@ public:
    *   node id to store in the direct index when adding images
    */
   template<class T>
-  void setVocabulary(const T& voc, bool use_di, int di_levels = 0);
-  
+  void setVocabulary(const T& voc, const bool use_di, const int di_levels = 0);
+
   /**
    * Returns a pointer to the vocabulary used
    * @return vocabulary
    */
-  inline const TemplatedVocabulary<TDescriptor,F>* getVocabulary() const;
+  inline const TemplatedVocabulary<TDescriptor, F>* getVocabulary() const;
 
   /** 
    * Allocates some memory for the direct and inverted indexes
@@ -118,7 +121,7 @@ public:
    * @param ni number of expected words per image
    * @note Use 0 to ignore a parameter
    */
-  void allocate(int nd = 0, int ni = 0);
+  void allocate(const int nd = 0, const int ni = 0);
 
   /**
    * Adds an entry to the database and returns its index
@@ -127,8 +130,7 @@ public:
    * @param fvec if given, the vector of nodes and feature indexes is returned
    * @return id of new entry
    */
-  EntryId add(const std::vector<TDescriptor> &features,
-    BowVector *bowvec = NULL, FeatureVector *fvec = NULL);
+  EntryId add(const std::vector<TDescriptor>& features, BowVector* bowvec = nullptr, FeatureVector* fvec = nullptr);
 
   /**
    * Adss an entry to the database and returns its index
@@ -137,8 +139,7 @@ public:
    *   direct index
    * @return id of new entry
    */
-  EntryId add(const BowVector &vec, 
-    const FeatureVector &fec = FeatureVector() );
+  EntryId add(const BowVector& vec, const FeatureVector& fec = FeatureVector());
 
   /**
    * Empties the database
@@ -150,19 +151,19 @@ public:
    * @return number of entries in the database
    */
   inline unsigned int size() const;
-  
+
   /**
    * Checks if the direct index is being used
    * @return true iff using direct index
    */
   inline bool usingDirectIndex() const;
-  
+
   /**
    * Returns the di levels when using direct index
    * @return di levels
    */
   inline int getDirectIndexLevels() const;
-  
+
   /**
    * Queries the database with some features
    * @param features query features
@@ -171,9 +172,9 @@ public:
    * @param max_id only entries with id <= max_id are returned in ret. 
    *   < 0 means all
    */
-  void query(const std::vector<TDescriptor> &features, QueryResults &ret,
-    int max_results = 1, int max_id = -1) const;
-  
+  void query(const std::vector<TDescriptor>& features, QueryResults& ret,
+             int max_results = 1, int max_id = -1) const;
+
   /**
    * Queries the database with a vector
    * @param vec bow vector already normalized
@@ -182,8 +183,8 @@ public:
    * @param max_id only entries with id <= max_id are returned in ret. 
    *   < 0 means all
    */
-  void query(const BowVector &vec, QueryResults &ret, 
-    int max_results = 1, int max_id = -1) const;
+  void query(const BowVector& vec, QueryResults& ret,
+             int max_results = 1, int max_id = -1) const;
 
   /**
    * Returns the a feature vector associated with a database entry
@@ -197,143 +198,134 @@ public:
    * Stores the database in a file
    * @param filename
    */
-  void save(const std::string &filename) const;
-  
+  void save(const std::string& filename) const;
+
   /**
    * Loads the database from a file
    * @param filename
    */
-  void load(const std::string &filename);
-  
+  void load(const std::string& filename);
+
   /** 
    * Stores the database in the given file storage structure
    * @param fs
    * @param name node name
    */
-  virtual void save(cv::FileStorage &fs, 
-    const std::string &name = "database") const;
-  
+  virtual void save(cv::FileStorage& fs,
+                    const std::string& name = "database") const;
+
   /** 
    * Loads the database from the given file storage structure
    * @param fs
    * @param name node name
    */
-  virtual void load(const cv::FileStorage &fs, 
-    const std::string &name = "database");
+  virtual void load(const cv::FileStorage& fs,
+                    const std::string& name = "database");
 
 protected:
-  
-  /// Query with L1 scoring
-  void queryL1(const BowVector &vec, QueryResults &ret, 
-    int max_results, int max_id) const;
-  
-  /// Query with L2 scoring
-  void queryL2(const BowVector &vec, QueryResults &ret, 
-    int max_results, int max_id) const;
-  
-  /// Query with Chi square scoring
-  void queryChiSquare(const BowVector &vec, QueryResults &ret, 
-    int max_results, int max_id) const;
-  
-  /// Query with Bhattacharyya scoring
-  void queryBhattacharyya(const BowVector &vec, QueryResults &ret, 
-    int max_results, int max_id) const;
-  
-  /// Query with KL divergence scoring  
-  void queryKL(const BowVector &vec, QueryResults &ret, 
-    int max_results, int max_id) const;
-  
-  /// Query with dot product scoring
-  void queryDotProduct(const BowVector &vec, QueryResults &ret, 
-    int max_results, int max_id) const;
+  //! Query with L1 scoring
+  void queryL1(const BowVector& vec, QueryResults& ret,
+               const int max_results, const int max_id) const;
+
+  //! Query with L2 scoring
+  void queryL2(const BowVector& vec, QueryResults& ret,
+               const int max_results, const int max_id) const;
+
+  //! Query with Chi square scoring
+  void queryChiSquare(const BowVector& vec, QueryResults& ret,
+                      const int max_results, const int max_id) const;
+
+  //! Query with Bhattacharyya scoring
+  void queryBhattacharyya(const BowVector& vec, QueryResults& ret,
+                          const int max_results, const int max_id) const;
+
+  //! Query with KL divergence scoring
+  void queryKL(const BowVector& vec, QueryResults& ret,
+               const int max_results, const int max_id) const;
+
+  //! Query with dot product scoring
+  void queryDotProduct(const BowVector& vec, QueryResults& ret,
+                       const int max_results, const int max_id) const;
 
 protected:
-
   /* Inverted file declaration */
-  
-  /// Item of IFRow
-  struct IFPair
-  {
-    /// Entry id
+
+  //! Item of IFRow
+  struct IFPair {
+    //! Entry id
     EntryId entry_id;
-    
-    /// Word weight in this entry
+
+    //! Word weight in this entry
     WordValue word_weight;
-    
+
     /**
      * Creates an empty pair
      */
-    IFPair(){}
-    
+    IFPair() {}
+
     /**
      * Creates an inverted file pair
      * @param eid entry id
      * @param wv word weight
      */
-    IFPair(EntryId eid, WordValue wv): entry_id(eid), word_weight(wv) {}
-    
+    IFPair(const EntryId eid, const WordValue wv)
+        : entry_id(eid), word_weight(wv) {}
+
     /**
      * Compares the entry ids
      * @param eid
      * @return true iff this entry id is the same as eid
      */
-    inline bool operator==(EntryId eid) const { return entry_id == eid; }
+    inline bool operator==(const EntryId eid) const { return entry_id == eid; }
   };
-  
-  /// Row of InvertedFile
-  typedef std::list<IFPair> IFRow;
+
+  //! Row of InvertedFile
+  using IFRow = std::list<IFPair>;
   // IFRows are sorted in ascending entry_id order
-  
-  /// Inverted index
-  typedef std::vector<IFRow> InvertedFile; 
+
+  //! Inverted index
+  using InvertedFile = std::vector<IFRow>;
   // InvertedFile[word_id] --> inverted file of that word
-  
+
   /* Direct file declaration */
 
-  /// Direct index
-  typedef std::vector<FeatureVector> DirectFile;
+  //! Direct index
+  using DirectFile = std::vector<FeatureVector>;
   // DirectFile[entry_id] --> [ directentry, ... ]
 
 protected:
+  //! Associated vocabulary
+  TemplatedVocabulary<TDescriptor, F>* m_voc;
 
-  /// Associated vocabulary
-  TemplatedVocabulary<TDescriptor, F> *m_voc;
-  
-  /// Flag to use direct index
+  //! Flag to use direct index
   bool m_use_di;
-  
-  /// Levels to go up the vocabulary tree to select nodes to store
-  /// in the direct index
+
+  //! Levels to go up the vocabulary tree to select nodes to store in the direct index
   int m_dilevels;
-  
-  /// Inverted file (must have size() == |words|)
+
+  //! Inverted file (must have size() == |words|)
   InvertedFile m_ifile;
-  
-  /// Direct file (resized for allocation)
+
+  //! Direct file (resized for allocation)
   DirectFile m_dfile;
-  
-  /// Number of valid entries in m_dfile
+
+  //! Number of valid entries in m_dfile
   int m_nentries;
-  
 };
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-TemplatedDatabase<TDescriptor, F>::TemplatedDatabase
-  (bool use_di, int di_levels)
-  : m_voc(NULL), m_use_di(use_di), m_dilevels(di_levels), m_nentries(0)
-{
+TemplatedDatabase<TDescriptor, F>::TemplatedDatabase(const bool use_di, const int di_levels)
+    : m_voc(nullptr), m_use_di(use_di), m_dilevels(di_levels), m_nentries(0) {
 }
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
 template<class T>
-TemplatedDatabase<TDescriptor, F>::TemplatedDatabase
-  (const T &voc, bool use_di, int di_levels)
-  : m_voc(NULL), m_use_di(use_di), m_dilevels(di_levels)
-{
+TemplatedDatabase<TDescriptor, F>::TemplatedDatabase(const T& voc, const bool use_di, const int di_levels)
+    : m_voc(nullptr), m_use_di(use_di), m_dilevels(di_levels) {
   setVocabulary(voc);
   clear();
 }
@@ -341,49 +333,39 @@ TemplatedDatabase<TDescriptor, F>::TemplatedDatabase
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-TemplatedDatabase<TDescriptor,F>::TemplatedDatabase
-  (const TemplatedDatabase<TDescriptor,F> &db)
-  : m_voc(NULL)
-{
+TemplatedDatabase<TDescriptor, F>::TemplatedDatabase(const TemplatedDatabase<TDescriptor, F>& db)
+    : m_voc(nullptr) {
   *this = db;
 }
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-TemplatedDatabase<TDescriptor, F>::TemplatedDatabase
-  (const std::string &filename)
-  : m_voc(NULL)
-{
+TemplatedDatabase<TDescriptor, F>::TemplatedDatabase(const std::string& filename)
+    : m_voc(nullptr) {
   load(filename);
 }
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-TemplatedDatabase<TDescriptor, F>::TemplatedDatabase
-  (const char *filename)
-  : m_voc(NULL)
-{
+TemplatedDatabase<TDescriptor, F>::TemplatedDatabase(const char* filename)
+    : m_voc(nullptr) {
   load(filename);
 }
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-TemplatedDatabase<TDescriptor, F>::~TemplatedDatabase(void)
-{
+TemplatedDatabase<TDescriptor, F>::~TemplatedDatabase() {
   delete m_voc;
 }
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-TemplatedDatabase<TDescriptor,F>& TemplatedDatabase<TDescriptor,F>::operator=
-  (const TemplatedDatabase<TDescriptor,F> &db)
-{
-  if(this != &db)
-  {
+TemplatedDatabase<TDescriptor, F>& TemplatedDatabase<TDescriptor, F>::operator=(const TemplatedDatabase<TDescriptor, F>& db) {
+  if (this != &db) {
     m_dfile = db.m_dfile;
     m_dilevels = db.m_dilevels;
     m_ifile = db.m_ifile;
@@ -397,32 +379,25 @@ TemplatedDatabase<TDescriptor,F>& TemplatedDatabase<TDescriptor,F>::operator=
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-EntryId TemplatedDatabase<TDescriptor, F>::add(
-  const std::vector<TDescriptor> &features,
-  BowVector *bowvec, FeatureVector *fvec)
-{
+EntryId TemplatedDatabase<TDescriptor, F>::add(const std::vector<TDescriptor>& features, BowVector* bowvec, FeatureVector* fvec) {
   BowVector aux;
   BowVector& v = (bowvec ? *bowvec : aux);
-  
-  if(m_use_di && fvec != NULL)
-  {
-    m_voc->transform(features, v, *fvec, m_dilevels); // with features
+
+  if (m_use_di && fvec != nullptr) {
+    m_voc->transform(features, v, *fvec, m_dilevels);
     return add(v, *fvec);
   }
-  else if(m_use_di)
-  {
+  else if (m_use_di) {
     FeatureVector fv;
-    m_voc->transform(features, v, fv, m_dilevels); // with features
+    m_voc->transform(features, v, fv, m_dilevels);
     return add(v, fv);
   }
-  else if(fvec != NULL)
-  {
-    m_voc->transform(features, v, *fvec, m_dilevels); // with features
+  else if (fvec != nullptr) {
+    m_voc->transform(features, v, *fvec, m_dilevels);
     return add(v);
   }
-  else
-  {
-    m_voc->transform(features, v); // with features
+  else {
+    m_voc->transform(features, v);
     return add(v);
   }
 }
@@ -430,37 +405,31 @@ EntryId TemplatedDatabase<TDescriptor, F>::add(
 // ---------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-EntryId TemplatedDatabase<TDescriptor, F>::add(const BowVector &v,
-  const FeatureVector &fv)
-{
+EntryId TemplatedDatabase<TDescriptor, F>::add(const BowVector& v, const FeatureVector& fv) {
   EntryId entry_id = m_nentries++;
 
   BowVector::const_iterator vit;
   std::vector<unsigned int>::const_iterator iit;
 
-  if(m_use_di)
-  {
+  if (m_use_di) {
     // update direct file
-    if(entry_id == m_dfile.size())
-    {
+    if (entry_id == m_dfile.size()) {
       m_dfile.push_back(fv);
     }
-    else
-    {
+    else {
       m_dfile[entry_id] = fv;
     }
   }
-  
+
   // update inverted file
-  for(vit = v.begin(); vit != v.end(); ++vit)
-  {
+  for (vit = v.begin(); vit != v.end(); ++vit) {
     const WordId& word_id = vit->first;
     const WordValue& word_weight = vit->second;
-    
+
     IFRow& ifrow = m_ifile[word_id];
     ifrow.push_back(IFPair(entry_id, word_weight));
   }
-  
+
   return entry_id;
 }
 
@@ -468,9 +437,7 @@ EntryId TemplatedDatabase<TDescriptor, F>::add(const BowVector &v,
 
 template<class TDescriptor, class F>
 template<class T>
-inline void TemplatedDatabase<TDescriptor, F>::setVocabulary
-  (const T& voc)
-{
+inline void TemplatedDatabase<TDescriptor, F>::setVocabulary(const T& voc) {
   delete m_voc;
   m_voc = new T(voc);
   clear();
@@ -480,9 +447,7 @@ inline void TemplatedDatabase<TDescriptor, F>::setVocabulary
 
 template<class TDescriptor, class F>
 template<class T>
-inline void TemplatedDatabase<TDescriptor, F>::setVocabulary
-  (const T& voc, bool use_di, int di_levels)
-{
+inline void TemplatedDatabase<TDescriptor, F>::setVocabulary(const T& voc, const bool use_di, const int di_levels) {
   m_use_di = use_di;
   m_dilevels = di_levels;
   delete m_voc;
@@ -493,17 +458,15 @@ inline void TemplatedDatabase<TDescriptor, F>::setVocabulary
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-inline const TemplatedVocabulary<TDescriptor,F>* 
-TemplatedDatabase<TDescriptor, F>::getVocabulary() const
-{
+inline const TemplatedVocabulary<TDescriptor, F>*
+TemplatedDatabase<TDescriptor, F>::getVocabulary() const {
   return m_voc;
 }
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-inline void TemplatedDatabase<TDescriptor, F>::clear()
-{
+inline void TemplatedDatabase<TDescriptor, F>::clear() {
   // resize vectors
   m_ifile.resize(0);
   m_ifile.resize(m_voc->size());
@@ -514,25 +477,20 @@ inline void TemplatedDatabase<TDescriptor, F>::clear()
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-void TemplatedDatabase<TDescriptor, F>::allocate(int nd, int ni)
-{
+void TemplatedDatabase<TDescriptor, F>::allocate(const int nd, const int ni) {
   // m_ifile already contains |words| items
-  if(ni > 0)
-  {
+  if (ni > 0) {
     typename std::vector<IFRow>::iterator rit;
-    for(rit = m_ifile.begin(); rit != m_ifile.end(); ++rit)
-    {
+    for (rit = m_ifile.begin(); rit != m_ifile.end(); ++rit) {
       int n = (int)rit->size();
-      if(ni > n)
-      {
+      if (ni > n) {
         rit->resize(ni);
         rit->resize(n);
       }
     }
   }
-  
-  if(m_use_di && (int)m_dfile.size() < nd)
-  {
+
+  if (m_use_di && (int)m_dfile.size() < nd) {
     m_dfile.resize(nd);
   }
 }
@@ -540,34 +498,29 @@ void TemplatedDatabase<TDescriptor, F>::allocate(int nd, int ni)
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-inline unsigned int TemplatedDatabase<TDescriptor, F>::size() const
-{
+inline unsigned int TemplatedDatabase<TDescriptor, F>::size() const {
   return m_nentries;
 }
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-inline bool TemplatedDatabase<TDescriptor, F>::usingDirectIndex() const
-{
+inline bool TemplatedDatabase<TDescriptor, F>::usingDirectIndex() const {
   return m_use_di;
 }
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-inline int TemplatedDatabase<TDescriptor, F>::getDirectIndexLevels() const
-{
+inline int TemplatedDatabase<TDescriptor, F>::getDirectIndexLevels() const {
   return m_dilevels;
 }
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-void TemplatedDatabase<TDescriptor, F>::query(
-  const std::vector<TDescriptor> &features,
-  QueryResults &ret, int max_results, int max_id) const
-{
+void TemplatedDatabase<TDescriptor, F>::query(const std::vector<TDescriptor>& features, QueryResults& ret,
+                                              const int max_results, const int max_id) const {
   BowVector vec;
   m_voc->transform(features, vec);
   query(vec, ret, max_results, max_id);
@@ -576,34 +529,31 @@ void TemplatedDatabase<TDescriptor, F>::query(
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-void TemplatedDatabase<TDescriptor, F>::query(
-  const BowVector &vec, 
-  QueryResults &ret, int max_results, int max_id) const
-{
+void TemplatedDatabase<TDescriptor, F>::query(const BowVector& vec, QueryResults& ret,
+                                              const int max_results, const int max_id) const {
   ret.resize(0);
-  
-  switch(m_voc->getScoringType())
-  {
+
+  switch (m_voc->getScoringType()) {
     case L1_NORM:
       queryL1(vec, ret, max_results, max_id);
       break;
-      
+
     case L2_NORM:
       queryL2(vec, ret, max_results, max_id);
       break;
-      
+
     case CHI_SQUARE:
       queryChiSquare(vec, ret, max_results, max_id);
       break;
-      
+
     case KL:
       queryKL(vec, ret, max_results, max_id);
       break;
-      
+
     case BHATTACHARYYA:
       queryBhattacharyya(vec, ret, max_results, max_id);
       break;
-      
+
     case DOT_PRODUCT:
       queryDotProduct(vec, ret, max_results, max_id);
       break;
@@ -613,351 +563,316 @@ void TemplatedDatabase<TDescriptor, F>::query(
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-void TemplatedDatabase<TDescriptor, F>::queryL1(const BowVector &vec, 
-  QueryResults &ret, int max_results, int max_id) const
-{
+void TemplatedDatabase<TDescriptor, F>::queryL1(const BowVector& vec, QueryResults& ret,
+                                                const int max_results, const int max_id) const {
   BowVector::const_iterator vit;
   typename IFRow::const_iterator rit;
-    
+
   std::map<EntryId, double> pairs;
   std::map<EntryId, double>::iterator pit;
-  
-  for(vit = vec.begin(); vit != vec.end(); ++vit)
-  {
+
+  for (vit = vec.begin(); vit != vec.end(); ++vit) {
     const WordId word_id = vit->first;
     const WordValue& qvalue = vit->second;
-        
+
     const IFRow& row = m_ifile[word_id];
-    
+
     // IFRows are sorted in ascending entry_id order
-    
-    for(rit = row.begin(); rit != row.end(); ++rit)
-    {
+
+    for (rit = row.begin(); rit != row.end(); ++rit) {
       const EntryId entry_id = rit->entry_id;
       const WordValue& dvalue = rit->word_weight;
-      
-      if((int)entry_id < max_id || max_id == -1)
-      {
+
+      if ((int)entry_id < max_id || max_id == -1) {
         double value = fabs(qvalue - dvalue) - fabs(qvalue) - fabs(dvalue);
-        
+
         pit = pairs.lower_bound(entry_id);
-        if(pit != pairs.end() && !(pairs.key_comp()(entry_id, pit->first)))
-        {
+        if (pit != pairs.end() && !(pairs.key_comp()(entry_id, pit->first))) {
           pit->second += value;
         }
-        else
-        {
-          pairs.insert(pit, 
-            std::map<EntryId, double>::value_type(entry_id, value));
+        else {
+          pairs.insert(pit,
+                       std::map<EntryId, double>::value_type(entry_id, value));
         }
       }
-      
+
     } // for each inverted row
-  } // for each query word
-	
+  }   // for each query word
+
   // move to vector
   ret.reserve(pairs.size());
-  for(pit = pairs.begin(); pit != pairs.end(); ++pit)
-  {
+  for (pit = pairs.begin(); pit != pairs.end(); ++pit) {
     ret.push_back(Result(pit->first, pit->second));
   }
-	
-  // resulting "scores" are now in [-2 best .. 0 worst]	
-  
+
+  // resulting "scores" are now in [-2 best .. 0 worst]
+
   // sort vector in ascending order of score
   std::sort(ret.begin(), ret.end());
   // (ret is inverted now --the lower the better--)
 
   // cut vector
-  if(max_results > 0 && (int)ret.size() > max_results)
+  if (max_results > 0 && (int)ret.size() > max_results)
     ret.resize(max_results);
-  
+
   // complete and scale score to [0 worst .. 1 best]
-  // ||v - w||_{L1} = 2 + Sum(|v_i - w_i| - |v_i| - |w_i|) 
-  //		for all i | v_i != 0 and w_i != 0 
+  // ||v - w||_{L1} = 2 + Sum(|v_i - w_i| - |v_i| - |w_i|)
+  //    for all i | v_i != 0 and w_i != 0
   // (Nister, 2006)
   // scaled_||v - w||_{L1} = 1 - 0.5 * ||v - w||_{L1}
   QueryResults::iterator qit;
-  for(qit = ret.begin(); qit != ret.end(); qit++) 
-    qit->Score = -qit->Score/2.0;
+  for (qit = ret.begin(); qit != ret.end(); qit++)
+    qit->Score = -qit->Score / 2.0;
 }
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-void TemplatedDatabase<TDescriptor, F>::queryL2(const BowVector &vec, 
-  QueryResults &ret, int max_results, int max_id) const
-{
+void TemplatedDatabase<TDescriptor, F>::queryL2(const BowVector& vec, QueryResults& ret,
+                                                const int max_results, const int max_id) const {
   BowVector::const_iterator vit;
   typename IFRow::const_iterator rit;
-  
+
   std::map<EntryId, double> pairs;
   std::map<EntryId, double>::iterator pit;
-  
+
   //map<EntryId, int> counters;
   //map<EntryId, int>::iterator cit;
-  
-  for(vit = vec.begin(); vit != vec.end(); ++vit)
-  {
+
+  for (vit = vec.begin(); vit != vec.end(); ++vit) {
     const WordId word_id = vit->first;
     const WordValue& qvalue = vit->second;
-    
+
     const IFRow& row = m_ifile[word_id];
-    
+
     // IFRows are sorted in ascending entry_id order
-    
-    for(rit = row.begin(); rit != row.end(); ++rit)
-    {
+
+    for (rit = row.begin(); rit != row.end(); ++rit) {
       const EntryId entry_id = rit->entry_id;
       const WordValue& dvalue = rit->word_weight;
-      
-      if((int)entry_id < max_id || max_id == -1)
-      {
-        double value = - qvalue * dvalue; // minus sign for sorting trick
-        
+
+      if ((int)entry_id < max_id || max_id == -1) {
+        double value = -qvalue * dvalue; // minus sign for sorting trick
+
         pit = pairs.lower_bound(entry_id);
         //cit = counters.lower_bound(entry_id);
-        if(pit != pairs.end() && !(pairs.key_comp()(entry_id, pit->first)))
-        {
-          pit->second += value; 
+        if (pit != pairs.end() && !(pairs.key_comp()(entry_id, pit->first))) {
+          pit->second += value;
           //cit->second += 1;
         }
-        else
-        {
-          pairs.insert(pit, 
-            std::map<EntryId, double>::value_type(entry_id, value));
-          
-          //counters.insert(cit, 
+        else {
+          pairs.insert(pit,
+                       std::map<EntryId, double>::value_type(entry_id, value));
+
+          //counters.insert(cit,
           //  map<EntryId, int>::value_type(entry_id, 1));
         }
       }
-      
+
     } // for each inverted row
-  } // for each query word
-	
+  }   // for each query word
+
   // move to vector
   ret.reserve(pairs.size());
   //cit = counters.begin();
-  for(pit = pairs.begin(); pit != pairs.end(); ++pit)//, ++cit)
+  for (pit = pairs.begin(); pit != pairs.end(); ++pit) //, ++cit)
   {
-    ret.push_back(Result(pit->first, pit->second));// / cit->second));
+    ret.push_back(Result(pit->first, pit->second)); // / cit->second));
   }
-	
-  // resulting "scores" are now in [-1 best .. 0 worst]	
-  
+
+  // resulting "scores" are now in [-1 best .. 0 worst]
+
   // sort vector in ascending order of score
   std::sort(ret.begin(), ret.end());
   // (ret is inverted now --the lower the better--)
 
   // cut vector
-  if(max_results > 0 && (int)ret.size() > max_results)
+  if (max_results > 0 && (int)ret.size() > max_results)
     ret.resize(max_results);
 
   // complete and scale score to [0 worst .. 1 best]
-  // ||v - w||_{L2} = sqrt( 2 - 2 * Sum(v_i * w_i) 
-	//		for all i | v_i != 0 and w_i != 0 )
-	// (Nister, 2006)
-	QueryResults::iterator qit;
-  for(qit = ret.begin(); qit != ret.end(); qit++) 
-  {
-    if(qit->Score <= -1.0) // rounding error
+  // ||v - w||_{L2} = sqrt( 2 - 2 * Sum(v_i * w_i)
+  //    for all i | v_i != 0 and w_i != 0 )
+  // (Nister, 2006)
+  QueryResults::iterator qit;
+  for (qit = ret.begin(); qit != ret.end(); qit++) {
+    if (qit->Score <= -1.0) // rounding error
       qit->Score = 1.0;
     else
       qit->Score = 1.0 - sqrt(1.0 + qit->Score); // [0..1]
-      // the + sign is ok, it is due to - sign in 
-      // value = - qvalue * dvalue
+                                                 // the + sign is ok, it is due to - sign in
+                                                 // value = - qvalue * dvalue
   }
-  
 }
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-void TemplatedDatabase<TDescriptor, F>::queryChiSquare(const BowVector &vec, 
-  QueryResults &ret, int max_results, int max_id) const
-{
+void TemplatedDatabase<TDescriptor, F>::queryChiSquare(const BowVector& vec, QueryResults& ret,
+                                                       const int max_results, const int max_id) const {
   BowVector::const_iterator vit;
   typename IFRow::const_iterator rit;
-  
-  std::map<EntryId, std::pair<double, int> > pairs;
-  std::map<EntryId, std::pair<double, int> >::iterator pit;
-  
-  std::map<EntryId, std::pair<double, double> > sums; // < sum vi, sum wi >
-  std::map<EntryId, std::pair<double, double> >::iterator sit;
-  
+
+  std::map<EntryId, std::pair<double, int>> pairs;
+  std::map<EntryId, std::pair<double, int>>::iterator pit;
+
+  std::map<EntryId, std::pair<double, double>> sums; // < sum vi, sum wi >
+  std::map<EntryId, std::pair<double, double>>::iterator sit;
+
   // In the current implementation, we suppose vec is not normalized
-  
+
   //map<EntryId, double> expected;
   //map<EntryId, double>::iterator eit;
-  
-  for(vit = vec.begin(); vit != vec.end(); ++vit)
-  {
+
+  for (vit = vec.begin(); vit != vec.end(); ++vit) {
     const WordId word_id = vit->first;
     const WordValue& qvalue = vit->second;
-    
+
     const IFRow& row = m_ifile[word_id];
-    
+
     // IFRows are sorted in ascending entry_id order
-    
-    for(rit = row.begin(); rit != row.end(); ++rit)
-    {
+
+    for (rit = row.begin(); rit != row.end(); ++rit) {
       const EntryId entry_id = rit->entry_id;
       const WordValue& dvalue = rit->word_weight;
-      
-      if((int)entry_id < max_id || max_id == -1)
-      {
+
+      if ((int)entry_id < max_id || max_id == -1) {
         // (v-w)^2/(v+w) - v - w = -4 vw/(v+w)
         // we move the 4 out
         double value = 0;
-        if(qvalue + dvalue != 0.0) // words may have weight zero
-          value = - qvalue * dvalue / (qvalue + dvalue);
-        
+        if (qvalue + dvalue != 0.0) // words may have weight zero
+          value = -qvalue * dvalue / (qvalue + dvalue);
+
         pit = pairs.lower_bound(entry_id);
         sit = sums.lower_bound(entry_id);
         //eit = expected.lower_bound(entry_id);
-        if(pit != pairs.end() && !(pairs.key_comp()(entry_id, pit->first)))
-        {
+        if (pit != pairs.end() && !(pairs.key_comp()(entry_id, pit->first))) {
           pit->second.first += value;
           pit->second.second += 1;
           //eit->second += dvalue;
           sit->second.first += qvalue;
           sit->second.second += dvalue;
         }
-        else
-        {
-          pairs.insert(pit, 
-            std::map<EntryId, std::pair<double, int> >::value_type(entry_id,
-              std::make_pair(value, 1) ));
-          //expected.insert(eit, 
+        else {
+          pairs.insert(pit,
+                       std::map<EntryId, std::pair<double, int>>::value_type(entry_id,
+                                                                             std::make_pair(value, 1)));
+          //expected.insert(eit,
           //  map<EntryId, double>::value_type(entry_id, dvalue));
-          
-          sums.insert(sit, 
-            std::map<EntryId, std::pair<double, double> >::value_type(entry_id,
-              std::make_pair(qvalue, dvalue) ));
+
+          sums.insert(sit,
+                      std::map<EntryId, std::pair<double, double>>::value_type(entry_id,
+                                                                               std::make_pair(qvalue, dvalue)));
         }
       }
-      
+
     } // for each inverted row
-  } // for each query word
-	
+  }   // for each query word
+
   // move to vector
   ret.reserve(pairs.size());
   sit = sums.begin();
-  for(pit = pairs.begin(); pit != pairs.end(); ++pit, ++sit)
-  {
-    if(pit->second.second >= MIN_COMMON_WORDS)
-    {
+  for (pit = pairs.begin(); pit != pairs.end(); ++pit, ++sit) {
+    if (pit->second.second >= MIN_COMMON_WORDS) {
       ret.push_back(Result(pit->first, pit->second.first));
       ret.back().nWords = pit->second.second;
       ret.back().sumCommonVi = sit->second.first;
       ret.back().sumCommonWi = sit->second.second;
-      ret.back().expectedChiScore = 
-        2 * sit->second.second / (1 + sit->second.second);
+      ret.back().expectedChiScore = 2 * sit->second.second / (1 + sit->second.second);
     }
-  
+
     //ret.push_back(Result(pit->first, pit->second));
   }
-	
-  // resulting "scores" are now in [-2 best .. 0 worst]	
+
+  // resulting "scores" are now in [-2 best .. 0 worst]
   // we have to add +2 to the scores to obtain the chi square score
-  
+
   // sort vector in ascending order of score
   std::sort(ret.begin(), ret.end());
   // (ret is inverted now --the lower the better--)
 
   // cut vector
-  if(max_results > 0 && (int)ret.size() > max_results)
+  if (max_results > 0 && (int)ret.size() > max_results)
     ret.resize(max_results);
 
   // complete and scale score to [0 worst .. 1 best]
   QueryResults::iterator qit;
-  for(qit = ret.begin(); qit != ret.end(); qit++)
-  {
+  for (qit = ret.begin(); qit != ret.end(); qit++) {
     // this takes the 4 into account
-    qit->Score = - 2. * qit->Score; // [0..1]
-    
+    qit->Score = -2. * qit->Score; // [0..1]
+
     qit->chiScore = qit->Score;
   }
-  
 }
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-void TemplatedDatabase<TDescriptor, F>::queryKL(const BowVector &vec, 
-  QueryResults &ret, int max_results, int max_id) const
-{
+void TemplatedDatabase<TDescriptor, F>::queryKL(const BowVector& vec, QueryResults& ret,
+                                                const int max_results, const int max_id) const {
   BowVector::const_iterator vit;
   typename IFRow::const_iterator rit;
-  
+
   std::map<EntryId, double> pairs;
   std::map<EntryId, double>::iterator pit;
-  
-  for(vit = vec.begin(); vit != vec.end(); ++vit)
-  {
+
+  for (vit = vec.begin(); vit != vec.end(); ++vit) {
     const WordId word_id = vit->first;
     const WordValue& vi = vit->second;
-    
+
     const IFRow& row = m_ifile[word_id];
-    
+
     // IFRows are sorted in ascending entry_id order
-    
-    for(rit = row.begin(); rit != row.end(); ++rit)
-    {    
+
+    for (rit = row.begin(); rit != row.end(); ++rit) {
       const EntryId entry_id = rit->entry_id;
       const WordValue& wi = rit->word_weight;
-      
-      if((int)entry_id < max_id || max_id == -1)
-      {
+
+      if ((int)entry_id < max_id || max_id == -1) {
         double value = 0;
-        if(vi != 0 && wi != 0) value = vi * log(vi/wi);
-        
+        if (vi != 0 && wi != 0)
+          value = vi * log(vi / wi);
+
         pit = pairs.lower_bound(entry_id);
-        if(pit != pairs.end() && !(pairs.key_comp()(entry_id, pit->first)))
-        {
+        if (pit != pairs.end() && !(pairs.key_comp()(entry_id, pit->first))) {
           pit->second += value;
         }
-        else
-        {
-          pairs.insert(pit, 
-            std::map<EntryId, double>::value_type(entry_id, value));
+        else {
+          pairs.insert(pit,
+                       std::map<EntryId, double>::value_type(entry_id, value));
         }
       }
-      
+
     } // for each inverted row
-  } // for each query word
-	
+  }   // for each query word
+
   // resulting "scores" are now in [-X worst .. 0 best .. X worst]
   // but we cannot make sure which ones are better without calculating
   // the complete score
 
   // complete scores and move to vector
   ret.reserve(pairs.size());
-  for(pit = pairs.begin(); pit != pairs.end(); ++pit)
-  {
+  for (pit = pairs.begin(); pit != pairs.end(); ++pit) {
     EntryId eid = pit->first;
     double value = 0.0;
 
-    for(vit = vec.begin(); vit != vec.end(); ++vit)
-    {
-      const WordValue &vi = vit->second;
+    for (vit = vec.begin(); vit != vec.end(); ++vit) {
+      const WordValue& vi = vit->second;
       const IFRow& row = m_ifile[vit->first];
 
-      if(vi != 0)
-      {
-        if(row.end() == find(row.begin(), row.end(), eid ))
-        {
+      if (vi != 0) {
+        if (row.end() == find(row.begin(), row.end(), eid)) {
           value += vi * (log(vi) - GeneralScoring::LOG_EPS);
         }
       }
     }
-    
+
     pit->second += value;
-    
+
     // to vector
     ret.push_back(Result(pit->first, pit->second));
   }
-  
+
   // real scores are now in [0 best .. X worst]
 
   // sort vector in ascending order
@@ -965,149 +880,132 @@ void TemplatedDatabase<TDescriptor, F>::queryKL(const BowVector &vec,
   std::sort(ret.begin(), ret.end());
 
   // cut vector
-  if(max_results > 0 && (int)ret.size() > max_results)
+  if (max_results > 0 && (int)ret.size() > max_results)
     ret.resize(max_results);
 
   // cannot scale scores
-    
 }
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-void TemplatedDatabase<TDescriptor, F>::queryBhattacharyya(
-  const BowVector &vec, QueryResults &ret, int max_results, int max_id) const
-{
+void TemplatedDatabase<TDescriptor, F>::queryBhattacharyya(const BowVector& vec, QueryResults& ret,
+                                                           const int max_results, const int max_id) const {
   BowVector::const_iterator vit;
   typename IFRow::const_iterator rit;
-  
+
   //map<EntryId, double> pairs;
   //map<EntryId, double>::iterator pit;
-  
-  std::map<EntryId, std::pair<double, int> > pairs; // <eid, <score, counter> >
-  std::map<EntryId, std::pair<double, int> >::iterator pit;
-  
-  for(vit = vec.begin(); vit != vec.end(); ++vit)
-  {
+
+  std::map<EntryId, std::pair<double, int>> pairs; // <eid, <score, counter> >
+  std::map<EntryId, std::pair<double, int>>::iterator pit;
+
+  for (vit = vec.begin(); vit != vec.end(); ++vit) {
     const WordId word_id = vit->first;
     const WordValue& qvalue = vit->second;
-    
+
     const IFRow& row = m_ifile[word_id];
-    
+
     // IFRows are sorted in ascending entry_id order
-    
-    for(rit = row.begin(); rit != row.end(); ++rit)
-    {
+
+    for (rit = row.begin(); rit != row.end(); ++rit) {
       const EntryId entry_id = rit->entry_id;
       const WordValue& dvalue = rit->word_weight;
-      
-      if((int)entry_id < max_id || max_id == -1)
-      {
+
+      if ((int)entry_id < max_id || max_id == -1) {
         double value = sqrt(qvalue * dvalue);
-        
+
         pit = pairs.lower_bound(entry_id);
-        if(pit != pairs.end() && !(pairs.key_comp()(entry_id, pit->first)))
-        {
+        if (pit != pairs.end() && !(pairs.key_comp()(entry_id, pit->first))) {
           pit->second.first += value;
           pit->second.second += 1;
         }
-        else
-        {
-          pairs.insert(pit, 
-            std::map<EntryId, std::pair<double, int> >::value_type(entry_id,
-              std::make_pair(value, 1)));
+        else {
+          pairs.insert(pit,
+                       std::map<EntryId, std::pair<double, int>>::value_type(entry_id,
+                                                                             std::make_pair(value, 1)));
         }
       }
-      
+
     } // for each inverted row
-  } // for each query word
-	
+  }   // for each query word
+
   // move to vector
   ret.reserve(pairs.size());
-  for(pit = pairs.begin(); pit != pairs.end(); ++pit)
-  {
-    if(pit->second.second >= MIN_COMMON_WORDS)
-    {
+  for (pit = pairs.begin(); pit != pairs.end(); ++pit) {
+    if (pit->second.second >= MIN_COMMON_WORDS) {
       ret.push_back(Result(pit->first, pit->second.first));
       ret.back().nWords = pit->second.second;
       ret.back().bhatScore = pit->second.first;
     }
   }
-	
+
   // scores are already in [0..1]
 
   // sort vector in descending order
   std::sort(ret.begin(), ret.end(), Result::gt);
 
   // cut vector
-  if(max_results > 0 && (int)ret.size() > max_results)
+  if (max_results > 0 && (int)ret.size() > max_results)
     ret.resize(max_results);
-
 }
 
 // ---------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-void TemplatedDatabase<TDescriptor, F>::queryDotProduct(
-  const BowVector &vec, QueryResults &ret, int max_results, int max_id) const
-{
+void TemplatedDatabase<TDescriptor, F>::queryDotProduct(const BowVector& vec, QueryResults& ret,
+                                                        const int max_results, const int max_id) const {
   BowVector::const_iterator vit;
   typename IFRow::const_iterator rit;
-  
+
   std::map<EntryId, double> pairs;
   std::map<EntryId, double>::iterator pit;
-  
-  for(vit = vec.begin(); vit != vec.end(); ++vit)
-  {
+
+  for (vit = vec.begin(); vit != vec.end(); ++vit) {
     const WordId word_id = vit->first;
     const WordValue& qvalue = vit->second;
-    
+
     const IFRow& row = m_ifile[word_id];
-    
+
     // IFRows are sorted in ascending entry_id order
-    
-    for(rit = row.begin(); rit != row.end(); ++rit)
-    {
+
+    for (rit = row.begin(); rit != row.end(); ++rit) {
       const EntryId entry_id = rit->entry_id;
       const WordValue& dvalue = rit->word_weight;
-      
-      if((int)entry_id < max_id || max_id == -1)
-      {
-        double value; 
-        if(this->m_voc->getWeightingType() == BINARY)
+
+      if ((int)entry_id < max_id || max_id == -1) {
+        double value;
+        if (this->m_voc->getWeightingType() == BINARY)
           value = 1;
         else
           value = qvalue * dvalue;
-        
+
         pit = pairs.lower_bound(entry_id);
-        if(pit != pairs.end() && !(pairs.key_comp()(entry_id, pit->first)))
-        {
+        if (pit != pairs.end() && !(pairs.key_comp()(entry_id, pit->first))) {
           pit->second += value;
         }
-        else
-        {
-          pairs.insert(pit, 
-            std::map<EntryId, double>::value_type(entry_id, value));
+        else {
+          pairs.insert(pit,
+                       std::map<EntryId, double>::value_type(entry_id, value));
         }
       }
-      
+
     } // for each inverted row
-  } // for each query word
-	
+  }   // for each query word
+
   // move to vector
   ret.reserve(pairs.size());
-  for(pit = pairs.begin(); pit != pairs.end(); ++pit)
-  {
+  for (pit = pairs.begin(); pit != pairs.end(); ++pit) {
     ret.push_back(Result(pit->first, pit->second));
   }
-	
+
   // scores are the greater the better
 
   // sort vector in descending order
   std::sort(ret.begin(), ret.end(), Result::gt);
 
   // cut vector
-  if(max_results > 0 && (int)ret.size() > max_results)
+  if (max_results > 0 && (int)ret.size() > max_results)
     ret.resize(max_results);
 
   // these scores cannot be scaled
@@ -1116,9 +1014,7 @@ void TemplatedDatabase<TDescriptor, F>::queryDotProduct(
 // ---------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-const FeatureVector& TemplatedDatabase<TDescriptor, F>::retrieveFeatures
-  (EntryId id) const
-{
+const FeatureVector& TemplatedDatabase<TDescriptor, F>::retrieveFeatures(EntryId id) const {
   assert(id < size());
   return m_dfile[id];
 }
@@ -1126,33 +1022,31 @@ const FeatureVector& TemplatedDatabase<TDescriptor, F>::retrieveFeatures
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-void TemplatedDatabase<TDescriptor, F>::save(const std::string &filename) const
-{
+void TemplatedDatabase<TDescriptor, F>::save(const std::string& filename) const {
   cv::FileStorage fs(filename.c_str(), cv::FileStorage::WRITE);
-  if(!fs.isOpened()) throw std::string("Could not open file ") + filename;
-  
+  if (!fs.isOpened())
+    throw std::string("Could not open file ") + filename;
+
   save(fs);
 }
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-void TemplatedDatabase<TDescriptor, F>::save(cv::FileStorage &fs,
-  const std::string &name) const
-{
+void TemplatedDatabase<TDescriptor, F>::save(cv::FileStorage& fs, const std::string& name) const {
   // Format YAML:
   // vocabulary { ... see TemplatedVocabulary::save }
-  // database 
+  // database
   // {
-  //   nEntries: 
-  //   usingDI: 
-  //   diLevels: 
+  //   nEntries:
+  //   usingDI:
+  //   diLevels:
   //   invertedIndex
   //   [
   //     [
-  //        { 
-  //          imageId: 
-  //          weight: 
+  //        {
+  //          imageId:
+  //          weight:
   //        }
   //     ]
   //   ]
@@ -1174,150 +1068,141 @@ void TemplatedDatabase<TDescriptor, F>::save(cv::FileStorage &fs,
   // (according to the construction of the indexes)
 
   m_voc->save(fs);
- 
+
   fs << name << "{";
-  
+
   fs << "nEntries" << m_nentries;
   fs << "usingDI" << (m_use_di ? 1 : 0);
   fs << "diLevels" << m_dilevels;
-  
-  fs << "invertedIndex" << "[";
-  
+
+  fs << "invertedIndex"
+     << "[";
+
   typename InvertedFile::const_iterator iit;
   typename IFRow::const_iterator irit;
-  for(iit = m_ifile.begin(); iit != m_ifile.end(); ++iit)
-  {
+  for (iit = m_ifile.begin(); iit != m_ifile.end(); ++iit) {
     fs << "["; // word of IF
-    for(irit = iit->begin(); irit != iit->end(); ++irit)
-    {
-      fs << "{:" 
-        << "imageId" << (int)irit->entry_id
-        << "weight" << irit->word_weight
-        << "}";
+    for (irit = iit->begin(); irit != iit->end(); ++irit) {
+      fs << "{:"
+         << "imageId" << (int)irit->entry_id
+         << "weight" << irit->word_weight
+         << "}";
     }
     fs << "]"; // word of IF
   }
-  
+
   fs << "]"; // invertedIndex
-  
-  fs << "directIndex" << "[";
-  
+
+  fs << "directIndex"
+     << "[";
+
   typename DirectFile::const_iterator dit;
   typename FeatureVector::const_iterator drit;
-  for(dit = m_dfile.begin(); dit != m_dfile.end(); ++dit)
-  {
+  for (dit = m_dfile.begin(); dit != m_dfile.end(); ++dit) {
     fs << "["; // entry of DF
-    
-    for(drit = dit->begin(); drit != dit->end(); ++drit)
-    {
+
+    for (drit = dit->begin(); drit != dit->end(); ++drit) {
       NodeId nid = drit->first;
       const std::vector<unsigned int>& features = drit->second;
-      
+
       // save info of last_nid
       fs << "{";
       fs << "nodeId" << (int)nid;
       // msvc++ 2010 with opencv 2.3.1 does not allow FileStorage::operator<<
       // with vectors of unsigned int
-      fs << "features" << "[" 
-        << *(const std::vector<int>*)(&features) << "]";
+      fs << "features"
+         << "["
+         << *(const std::vector<int>*)(&features) << "]";
       fs << "}";
     }
-    
+
     fs << "]"; // entry of DF
   }
-  
+
   fs << "]"; // directIndex
-  
+
   fs << "}"; // database
 }
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-void TemplatedDatabase<TDescriptor, F>::load(const std::string &filename)
-{
+void TemplatedDatabase<TDescriptor, F>::load(const std::string& filename) {
   cv::FileStorage fs(filename.c_str(), cv::FileStorage::READ);
-  if(!fs.isOpened()) throw std::string("Could not open file ") + filename;
-  
+  if (!fs.isOpened())
+    throw std::string("Could not open file ") + filename;
+
   load(fs);
 }
 
 // --------------------------------------------------------------------------
 
 template<class TDescriptor, class F>
-void TemplatedDatabase<TDescriptor, F>::load(const cv::FileStorage &fs,
-  const std::string &name)
-{ 
+void TemplatedDatabase<TDescriptor, F>::load(const cv::FileStorage& fs, const std::string& name) {
   // load voc first
   // subclasses must instantiate m_voc before calling this ::load
-  if(!m_voc) m_voc = new TemplatedVocabulary<TDescriptor, F>;
-  
+  if (!m_voc)
+    m_voc = new TemplatedVocabulary<TDescriptor, F>;
+
   m_voc->load(fs);
 
   // load database now
-  clear(); // resizes inverted file 
-    
+  clear(); // resizes inverted file
+
   cv::FileNode fdb = fs[name];
-  
-  m_nentries = (int)fdb["nEntries"]; 
+
+  m_nentries = (int)fdb["nEntries"];
   m_use_di = (int)fdb["usingDI"] != 0;
   m_dilevels = (int)fdb["diLevels"];
-  
+
   cv::FileNode fn = fdb["invertedIndex"];
-  for(WordId wid = 0; wid < fn.size(); ++wid)
-  {
+  for (WordId wid = 0; wid < fn.size(); ++wid) {
     cv::FileNode fw = fn[wid];
-    
-    for(unsigned int i = 0; i < fw.size(); ++i)
-    {
+
+    for (unsigned int i = 0; i < fw.size(); ++i) {
       EntryId eid = (int)fw[i]["imageId"];
       WordValue v = fw[i]["weight"];
-      
+
       m_ifile[wid].push_back(IFPair(eid, v));
     }
   }
-  
-  if(m_use_di)
-  {
+
+  if (m_use_di) {
     fn = fdb["directIndex"];
-    
+
     m_dfile.resize(fn.size());
     assert(m_nentries == (int)fn.size());
-    
+
     FeatureVector::iterator dit;
-    for(EntryId eid = 0; eid < fn.size(); ++eid)
-    {
+    for (EntryId eid = 0; eid < fn.size(); ++eid) {
       cv::FileNode fe = fn[eid];
-      
+
       m_dfile[eid].clear();
-      for(unsigned int i = 0; i < fe.size(); ++i)
-      {
+      for (unsigned int i = 0; i < fe.size(); ++i) {
         NodeId nid = (int)fe[i]["nodeId"];
-        
-        dit = m_dfile[eid].insert(m_dfile[eid].end(), 
-          make_pair(nid, std::vector<unsigned int>() ));
-        
+
+        dit = m_dfile[eid].insert(m_dfile[eid].end(),
+                                  make_pair(nid, std::vector<unsigned int>()));
+
         // this failed to compile with some opencv versions (2.3.1)
         //fe[i]["features"] >> dit->second;
-        
+
         // this was ok until OpenCV 2.4.1
         //std::vector<int> aux;
         //fe[i]["features"] >> aux; // OpenCV < 2.4.1
         //dit->second.resize(aux.size());
         //std::copy(aux.begin(), aux.end(), dit->second.begin());
-        
+
         cv::FileNode ff = fe[i]["features"][0];
         dit->second.reserve(ff.size());
-                
+
         cv::FileNodeIterator ffit;
-        for(ffit = ff.begin(); ffit != ff.end(); ++ffit)
-        {
-          dit->second.push_back((int)*ffit); 
+        for (ffit = ff.begin(); ffit != ff.end(); ++ffit) {
+          dit->second.push_back((int)*ffit);
         }
       }
     } // for each entry
-  } // if use_id
-  
+  }   // if use_id
 }
 
 // --------------------------------------------------------------------------
@@ -1328,15 +1213,14 @@ void TemplatedDatabase<TDescriptor, F>::load(const cv::FileStorage &fs,
  * @param db
  */
 template<class TDescriptor, class F>
-std::ostream& operator<<(std::ostream &os, 
-  const TemplatedDatabase<TDescriptor,F> &db)
-{
+std::ostream& operator<<(std::ostream& os, const TemplatedDatabase<TDescriptor, F>& db) {
   os << "Database: Entries = " << db.size() << ", "
-    "Using direct index = " << (db.usingDirectIndex() ? "yes" : "no");
-  
-  if(db.usingDirectIndex())
+                                               "Using direct index = "
+     << (db.usingDirectIndex() ? "yes" : "no");
+
+  if (db.usingDirectIndex())
     os << ", Direct index levels = " << db.getDirectIndexLevels();
-  
+
   os << ". " << *db.getVocabulary();
   return os;
 }

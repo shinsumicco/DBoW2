@@ -1,18 +1,19 @@
 #include <chrono>
+#include <memory>
 
 #include "DBoW2/FORB.h"
 #include "DBoW2/TemplatedVocabulary.h"
 
-typedef DBoW2::TemplatedVocabulary<DBoW2::FORB::TDescriptor, DBoW2::FORB> orb_vocab;
+typedef DBoW2::TemplatedVocabulary<DBoW2::FORB::TDescriptor, DBoW2::FORB> ORBVocabulary;
 
-class timer {
+class Timer {
 public:
-  timer() {
+  Timer() {
     start_ = std::chrono::system_clock::now();
   }
-  virtual ~timer() = default;
+  virtual ~Timer() = default;
 
-  double get_msec() {
+  double getMilliSec() {
     const auto dur = std::chrono::system_clock::now() - start_;
     const auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
     return msec;
@@ -22,31 +23,31 @@ private:
   std::chrono::system_clock::time_point start_;
 };
 
-void load_as_text(orb_vocab* voc, const std::string& in_file) {
-  timer t;
-  voc->loadFromTextFile(in_file);
-  printf("Loading from text: %.0fms\n", t.get_msec());
+void loadAsText(const std::unique_ptr<ORBVocabulary>& vocab, const std::string& in_file) {
+  Timer t;
+  vocab->loadFromTextFile(in_file);
+  printf("Loading from text: %.0fms\n", t.getMilliSec());
 }
 
-void load_as_binary(orb_vocab* voc, const std::string& in_file) {
-  timer t;
-  voc->loadFromBinaryFile(in_file);
-  printf("Loading from binary: %.0fs\n", t.get_msec());
+void loadAsBinary(const std::unique_ptr<ORBVocabulary>& vocab, const std::string& in_file) {
+  Timer t;
+  vocab->loadFromBinaryFile(in_file);
+  printf("Loading from binary: %.0fms\n", t.getMilliSec());
 }
 
-void save_as_text(orb_vocab* voc, const std::string& out_file) {
-  timer t;
-  voc->saveToTextFile(out_file);
-  printf("Saving as text: %.0fms\n", t.get_msec());
+void saveAsText(const std::unique_ptr<ORBVocabulary>& vocab, const std::string& out_file) {
+  Timer t;
+  vocab->saveToTextFile(out_file);
+  printf("Saving as text: %.0fms\n", t.getMilliSec());
 }
 
-void save_as_binary(orb_vocab* voc, const std::string& out_file) {
-  timer t;
-  voc->saveToBinaryFile(out_file);
-  printf("Saving as binary: %.0fms\n", t.get_msec());
+void saveAsBinary(const std::unique_ptr<ORBVocabulary>& vocab, const std::string& out_file) {
+  Timer t;
+  vocab->saveToBinaryFile(out_file);
+  printf("Saving as binary: %.0fms\n", t.getMilliSec());
 }
 
-void show_usage(char **argv) {
+void showUsage(char **argv) {
   std::cout << "Usage:" << std::endl;
   std::cout << argv[0] << " "
             << "INPUT_TYPE:(txt|bin) "
@@ -54,7 +55,6 @@ void show_usage(char **argv) {
             << "INPUT_FILEPATH "
             << "OUTPUT_FILEPATH"
             << std::endl;
-  std::cout << std::endl;
 }
 
 int main(int argc, char **argv) {
@@ -65,17 +65,16 @@ int main(int argc, char **argv) {
     "{@out-file||filepath of output vocab}"
     "{h help||show usage}");
 
-  std::cout << "DBoW2 Vocabulary Converter" << std::endl;
-  std::cout << std::endl;
+  std::cout << "ORB Vocabulary Converter for DBoW2" << std::endl;
 
   if (parser.has("h") || parser.has("help")) {
-    show_usage(argv);
+    showUsage(argv);
     return 0;
   }
 
   if (!parser.has("@in-ext") || !parser.has("@out-ext")
       || !parser.has("@in-file") || !parser.has("@out-file")) {
-    show_usage(argv);
+    showUsage(argv);
     return 0;
   }
 
@@ -86,37 +85,34 @@ int main(int argc, char **argv) {
 
   if ((in_ext != "txt" && in_ext != "bin")
       || (out_ext != "txt" && out_ext != "bin")){
-    show_usage(argv);
+    showUsage(argv);
     return 0;
   }
 
   std::cout << "INPUT(" << in_ext << "): " << in_file << std::endl;
   std::cout << "OUTPUT(" << out_ext << "): " << out_file << std::endl;
-  std::cout << std::endl;
  
-  orb_vocab* vocab = new orb_vocab();
+  auto vocab = std::unique_ptr<ORBVocabulary>(new ORBVocabulary());
 
   if (in_ext == "txt") {
-    load_as_text(vocab, in_file);
+    loadAsText(vocab, in_file);
   }
   else if (in_ext == "bin") {
-    load_as_binary(vocab, in_file);
+    loadAsBinary(vocab, in_file);
   }
   else {
     throw std::runtime_error("Unknown extension: " + in_ext);
   }
 
   if (out_ext == "txt") {
-    save_as_text(vocab, out_file);
+    saveAsText(vocab, out_file);
   }
   else if (out_ext == "bin") {
-    save_as_binary(vocab, out_file);
+    saveAsBinary(vocab, out_file);
   }
   else {
     throw std::runtime_error("Unknown extension: " + in_ext);
   }
-
-  std::cout << std::endl;
 
   return 0;
 }
