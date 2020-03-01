@@ -45,7 +45,6 @@ if(BUILD_DBoW2)
     src/FBrief.cpp
     src/FeatureVector.cpp
     src/FORB.cpp
-    src/FSurf64.cpp
     src/QueryResults.cpp
     src/ScoringObject.cpp)
 
