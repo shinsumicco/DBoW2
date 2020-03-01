@@ -4,7 +4,6 @@
  * Author: Dorian Galvez-Lopez
  * Description: bag of words vector
  * License: see the LICENSE.txt file
- *
  */
 
 #ifndef __D_T_BOW_VECTOR__
@@ -14,25 +13,31 @@
 #include <map>
 #include <vector>
 
+#ifdef _MSC_VER
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT
+#endif
+
 namespace DBoW2 {
 
-/// Id of words
+//! ID of words
 typedef unsigned int WordId;
 
-/// Value of a word
+//! Value of a word
 typedef double WordValue;
 
-/// Id of nodes in the vocabulary treee
+//! ID of nodes in the vocabulary treee
 typedef unsigned int NodeId;
 
-/// L-norms for normalization
+//! L-norms for normalization
 enum LNorm
 {
   L1,
   L2
 };
 
-/// Weighting type
+//! Weighting type
 enum WeightingType
 {
   TF_IDF,
@@ -41,7 +46,7 @@ enum WeightingType
   BINARY
 };
 
-/// Scoring type
+//! Scoring type
 enum ScoringType
 {
   L1_NORM,
@@ -52,9 +57,10 @@ enum ScoringType
   DOT_PRODUCT
 };
 
-/// Vector of words to represent images
-class BowVector: 
-	public std::map<WordId, WordValue>
+/**
+ * Vector of words to represent images
+ */
+class DLL_EXPORT BowVector: public std::map<WordId, WordValue>
 {
 public:
 
@@ -69,8 +75,7 @@ public:
 	~BowVector(void);
 	
 	/**
-	 * Adds a value to a word value existing in the vector, or creates a new
-	 * word with the given value
+	 * Adds a value to a word value existing in the vector, or creates a new word with the given value
 	 * @param id word id to look for
 	 * @param v value to create the word with, or to add to existing word
 	 */

@@ -4,7 +4,6 @@
  * Author: Dorian Galvez-Lopez
  * Description: functions for ORB descriptors
  * License: see the LICENSE.txt file
- *
  */
 
 #ifndef __D_T_F_ORB__
@@ -17,18 +16,26 @@
 
 #include "DBoW2/FClass.h"
 
+#ifdef _MSC_VER
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT
+#endif
+
 namespace DBoW2 {
 
-/// Functions to manipulate BRIEF descriptors
-class FORB: protected FClass
+/**
+ * Functions to manipulate BRIEF descriptors
+ */
+class DLL_EXPORT FORB: protected FClass
 {
 public:
 
-  /// Descriptor type
-  typedef cv::Mat TDescriptor; // CV_8U
-  /// Pointer to a single descriptor
+  //! Descriptor type
+  typedef cv::Mat TDescriptor;
+  //! Pointer to a single descriptor
   typedef const TDescriptor *pDescriptor;
-  /// Descriptor length (in bytes)
+  //! Descriptor length (in bytes)
   static const int L = 32;
 
   /**

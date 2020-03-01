@@ -4,7 +4,6 @@
  * Author: Dorian Galvez-Lopez
  * Description: functions for Surf64 descriptors
  * License: see the LICENSE.txt file
- *
  */
 
 #ifndef __D_T_F_SURF_64__
@@ -17,18 +16,26 @@
 
 #include "DBoW2/FClass.h"
 
+#ifdef _MSC_VER
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT
+#endif
+
 namespace DBoW2 {
 
-/// Functions to manipulate SURF64 descriptors
-class FSurf64: protected FClass
+/**
+ * Functions to manipulate SURF64 descriptors
+ */
+class DLL_EXPORT FSurf64: protected FClass
 {
 public:
 
-  /// Descriptor type
+  //! Descriptor type
   typedef std::vector<float> TDescriptor;
-  /// Pointer to a single descriptor
+  //! Pointer to a single descriptor
   typedef const TDescriptor *pDescriptor;
-  /// Descriptor length
+  //! Descriptor length
   static const int L = 64;
 
   /**

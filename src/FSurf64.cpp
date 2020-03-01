@@ -4,7 +4,6 @@
  * Author: Dorian Galvez-Lopez
  * Description: functions for Surf64 descriptors
  * License: see the LICENSE.txt file
- *
  */
  
 #include <vector>

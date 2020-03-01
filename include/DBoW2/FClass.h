@@ -4,7 +4,6 @@
  * Author: Dorian Galvez-Lopez
  * Description: generic FClass to instantiate templated classes
  * License: see the LICENSE.txt file
- *
  */
 
 #ifndef __D_T_FCLASS__
@@ -15,15 +14,21 @@
 
 #include <opencv2/core.hpp>
 
+#ifdef _MSC_VER
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT
+#endif
+
 namespace DBoW2 {
 
-/// Generic class to encapsulate functions to manage descriptors.
 /**
- * This class must be inherited. Derived classes can be used as the
- * parameter F when creating Templated structures
- * (TemplatedVocabulary, TemplatedDatabase, ...)
+ * Generic class to encapsulate functions to manage descriptors
+ * @note This class must be inherited. Derived classes can be used as the
+ *       parameter F when creating Templated structures
+ *       (TemplatedVocabulary, TemplatedDatabase, ...)
  */
-class FClass
+class DLL_EXPORT FClass
 {
   class TDescriptor;
   typedef const TDescriptor *pDescriptor;

@@ -4,7 +4,6 @@
  * Author: Dorian Galvez-Lopez
  * Description: structure to store results of database queries
  * License: see the LICENSE.txt file
- *
  */
 
 #include <iostream>

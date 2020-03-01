@@ -4,7 +4,6 @@
  * Author: Dorian Galvez-Lopez
  * Description: functions to compute bow scores 
  * License: see the LICENSE.txt file
- *
  */
 
 #ifndef __D_T_SCORING_OBJECT__
@@ -12,10 +11,18 @@
 
 #include "DBoW2/BowVector.h"
 
+#ifdef _MSC_VER
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT
+#endif
+
 namespace DBoW2 {
 
-/// Base class of scoring functions
-class GeneralScoring
+/**
+ * Base class of scoring functions
+ */
+class DLL_EXPORT GeneralScoring
 {
 public:
   /**
@@ -35,7 +42,7 @@ public:
    */
   virtual bool mustNormalize(LNorm &norm) const = 0;
 
-  /// Log of epsilon
+  //! Log of epsilon
 	static const double LOG_EPS; 
   // If you change the type of WordValue, make sure you change also the
 	// epsilon value (this is needed by the KL method)
@@ -68,24 +75,24 @@ public:
     virtual inline bool mustNormalize(LNorm &norm) const  \
       { norm = NORM; return MUSTNORMALIZE; } \
   }
-  
-/// L1 Scoring object
-class __SCORING_CLASS(L1Scoring, true, L1);
 
-/// L2 Scoring object
-class __SCORING_CLASS(L2Scoring, true, L2);
+//! L1 Scoring object
+class DLL_EXPORT __SCORING_CLASS(L1Scoring, true, L1);
 
-/// Chi square Scoring object
-class __SCORING_CLASS(ChiSquareScoring, true, L1);
+//! L2 Scoring object
+class DLL_EXPORT __SCORING_CLASS(L2Scoring, true, L2);
 
-/// KL divergence Scoring object
-class __SCORING_CLASS(KLScoring, true, L1);
+//! Chi square Scoring object
+class DLL_EXPORT __SCORING_CLASS(ChiSquareScoring, true, L1);
 
-/// Bhattacharyya Scoring object
-class __SCORING_CLASS(BhattacharyyaScoring, true, L1);
+//! KL divergence Scoring object
+class DLL_EXPORT __SCORING_CLASS(KLScoring, true, L1);
 
-/// Dot product Scoring object
-class __SCORING_CLASS(DotProductScoring, false, L1);
+//! Bhattacharyya Scoring object
+class DLL_EXPORT __SCORING_CLASS(BhattacharyyaScoring, true, L1);
+
+//! Dot product Scoring object
+class DLL_EXPORT __SCORING_CLASS(DotProductScoring, false, L1);
 
 #undef __SCORING_CLASS
   

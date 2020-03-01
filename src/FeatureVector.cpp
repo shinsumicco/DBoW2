@@ -4,7 +4,6 @@
  * Author: Dorian Galvez-Lopez
  * Description: feature vector
  * License: see the LICENSE.txt file
- *
  */
 
 #include <map>

@@ -4,7 +4,6 @@
  * Author: Dorian Galvez-Lopez
  * Description: functions for BRIEF descriptors
  * License: see the LICENSE.txt file
- *
  */
 
 #ifndef __D_T_F_BRIEF__
@@ -18,10 +17,18 @@
 
 #include "DBoW2/FClass.h"
 
+#ifdef _MSC_VER
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT
+#endif
+
 namespace DBoW2 {
 
-/// Functions to manipulate BRIEF descriptors
-class FBrief: protected FClass
+/**
+ * Functions to manipulate BRIEF descriptors
+ */
+class DLL_EXPORT FBrief: protected FClass
 {
 public:
 

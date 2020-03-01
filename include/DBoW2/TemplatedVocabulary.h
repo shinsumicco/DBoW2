@@ -24,13 +24,21 @@
 #include "DBoW2/BowVector.h"
 #include "DBoW2/ScoringObject.h"
 
+#ifdef _MSC_VER
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT
+#endif
+
 namespace DBoW2 {
 
-/// @param TDescriptor class of descriptor
-/// @param F class of descriptor functions
+/**
+ * Generic Vocabulary
+ * @param TDescriptor class of descriptor
+ * @param F class of descriptor functions
+ */
 template<class TDescriptor, class F>
-/// Generic Vocabulary
-class TemplatedVocabulary
+class __declspec(dllexport) TemplatedVocabulary
 {		
 public:
   
@@ -291,24 +299,24 @@ public:
 
 protected:
 
-  /// Pointer to descriptor
+  //! Pointer to descriptor
   typedef const TDescriptor *pDescriptor;
 
-  /// Tree node
+  //! Tree node
   struct Node 
   {
-    /// Node id
+    //! Node id
     NodeId id;
-    /// Weight if the node is a word
+    //! Weight if the node is a word
     WordValue weight;
-    /// Children 
+    //! Children 
     std::vector<NodeId> children;
-    /// Parent node (undefined in case of root)
+    //! Parent node (undefined in case of root)
     NodeId parent;
-    /// Node descriptor
+    //! Node descriptor
     TDescriptor descriptor;
 
-    /// Word id if the node is a word
+    //! Word id if the node is a word
     WordId word_id;
 
     /**
@@ -427,26 +435,26 @@ protected:
 
 protected:
 
-  /// Branching factor
+  //! Branching factor
   int m_k;
   
-  /// Depth levels 
+  //! Depth levels 
   int m_L;
   
-  /// Weighting method
+  //! Weighting method
   WeightingType m_weighting;
   
-  /// Scoring method
+  //! Scoring method
   ScoringType m_scoring;
   
-  /// Object for computing scores
+  //! Object for computing scores
   GeneralScoring* m_scoring_object;
   
-  /// Tree nodes
+  //! Tree nodes
   std::vector<Node> m_nodes;
   
-  /// Words of the vocabulary (tree leaves)
-  /// this condition holds: m_words[wid]->word_id == wid
+  //! Words of the vocabulary (tree leaves)
+  //! this condition holds: m_words[wid]->word_id == wid
   std::vector<Node*> m_words;
   
 };
@@ -678,7 +686,7 @@ void TemplatedVocabulary<TDescriptor,F>::HKmeansStep(NodeId parent_id,
   //const int msizes[] = { m_k, descriptors.size() };
   //cv::SparseMat assoc(2, msizes, CV_8U);
   //cv::SparseMat last_assoc(2, msizes, CV_8U);  
-  //// assoc.row(cluster_idx).col(descriptor_idx) = 1 iif associated
+  //! / assoc.row(cluster_idx).col(descriptor_idx) = 1 iif associated
   
   if((int)descriptors.size() <= m_k)
   {

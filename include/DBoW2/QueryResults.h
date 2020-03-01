@@ -4,7 +4,6 @@
  * Author: Dorian Galvez-Lopez
  * Description: structure to store results of database queries
  * License: see the LICENSE.txt file
- *
  */
 
 #ifndef __D_T_QUERY_RESULTS__
@@ -12,35 +11,39 @@
 
 #include <vector>
 
+#ifdef _MSC_VER
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT
+#endif
+
 namespace DBoW2 {
 
-/// Id of entries of the database
+//! Id of entries of the database
 typedef unsigned int EntryId;
 
-/// Single result of a query
-class Result
+/**
+ * Single result of a query
+ */
+class DLL_EXPORT Result
 {
 public:
   
-  /// Entry id
+  //! Entry id
   EntryId Id;
   
-  /// Score obtained
+  //! Score obtained
   double Score;
   
-  /// debug
-  int nWords; // words in common
-  // !!! this is filled only by Bhatt score!
-  // (and for BCMatching, BCThresholding then)
-  
-  double bhatScore, chiScore;
-  /// debug
-  
-  // only done by ChiSq and BCThresholding 
+  //! words in common (for debug)
+  int nWords; 
+
+  //! scores (for debug)
+  double bhatScore;
+  double chiScore;
   double sumCommonVi;
   double sumCommonWi;
   double expectedChiScore;
-  /// debug
 
   /**
    * Empty constructors
@@ -163,8 +166,10 @@ public:
   friend std::ostream & operator<<(std::ostream& os, const Result& ret );
 };
 
-/// Multiple results from a query
-class QueryResults: public std::vector<Result>
+/**
+ * Multiple results from a query
+ */
+class DLL_EXPORT QueryResults: public std::vector<Result>
 {
 public:
 
@@ -199,6 +204,6 @@ inline void QueryResults::scaleScores(double factor)
 
 // --------------------------------------------------------------------------
 
-} // namespace TemplatedBoW
+} // namespace DBoW2
   
 #endif

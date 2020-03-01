@@ -23,16 +23,24 @@
 #include "DBoW2/BowVector.h"
 #include "DBoW2/FeatureVector.h"
 
+#ifdef _MSC_VER
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT
+#endif
+
 namespace DBoW2 {
 
 // For query functions
 static int MIN_COMMON_WORDS = 5;
 
-/// @param TDescriptor class of descriptor
-/// @param F class of descriptor functions
+/**
+ * Generic Database
+ * @param TDescriptor class of descriptor
+ * @param F class of descriptor functions
+ */
 template<class TDescriptor, class F>
-/// Generic Database
-class TemplatedDatabase
+class DLL_EXPORT TemplatedDatabase
 {
 public:
 
@@ -223,27 +231,27 @@ public:
 
 protected:
   
-  /// Query with L1 scoring
+  //! Query with L1 scoring
   void queryL1(const BowVector &vec, QueryResults &ret, 
     int max_results, int max_id) const;
   
-  /// Query with L2 scoring
+  //! Query with L2 scoring
   void queryL2(const BowVector &vec, QueryResults &ret, 
     int max_results, int max_id) const;
   
-  /// Query with Chi square scoring
+  //! Query with Chi square scoring
   void queryChiSquare(const BowVector &vec, QueryResults &ret, 
     int max_results, int max_id) const;
   
-  /// Query with Bhattacharyya scoring
+  //! Query with Bhattacharyya scoring
   void queryBhattacharyya(const BowVector &vec, QueryResults &ret, 
     int max_results, int max_id) const;
   
-  /// Query with KL divergence scoring  
+  //! Query with KL divergence scoring  
   void queryKL(const BowVector &vec, QueryResults &ret, 
     int max_results, int max_id) const;
   
-  /// Query with dot product scoring
+  //! Query with dot product scoring
   void queryDotProduct(const BowVector &vec, QueryResults &ret, 
     int max_results, int max_id) const;
 
@@ -251,13 +259,13 @@ protected:
 
   /* Inverted file declaration */
   
-  /// Item of IFRow
+  //! Item of IFRow
   struct IFPair
   {
-    /// Entry id
+    //! Entry id
     EntryId entry_id;
     
-    /// Word weight in this entry
+    //! Word weight in this entry
     WordValue word_weight;
     
     /**
@@ -280,39 +288,38 @@ protected:
     inline bool operator==(EntryId eid) const { return entry_id == eid; }
   };
   
-  /// Row of InvertedFile
+  //! Row of InvertedFile
   typedef std::list<IFPair> IFRow;
   // IFRows are sorted in ascending entry_id order
   
-  /// Inverted index
+  //! Inverted index
   typedef std::vector<IFRow> InvertedFile; 
   // InvertedFile[word_id] --> inverted file of that word
   
   /* Direct file declaration */
 
-  /// Direct index
+  //! Direct index
   typedef std::vector<FeatureVector> DirectFile;
   // DirectFile[entry_id] --> [ directentry, ... ]
 
 protected:
 
-  /// Associated vocabulary
+  //! Associated vocabulary
   TemplatedVocabulary<TDescriptor, F> *m_voc;
   
-  /// Flag to use direct index
+  //! Flag to use direct index
   bool m_use_di;
   
-  /// Levels to go up the vocabulary tree to select nodes to store
-  /// in the direct index
+  //! Levels to go up the vocabulary tree to select nodes to store in the direct index
   int m_dilevels;
   
-  /// Inverted file (must have size() == |words|)
+  //! Inverted file (must have size() == |words|)
   InvertedFile m_ifile;
   
-  /// Direct file (resized for allocation)
+  //! Direct file (resized for allocation)
   DirectFile m_dfile;
   
-  /// Number of valid entries in m_dfile
+  //! Number of valid entries in m_dfile
   int m_nentries;
   
 };

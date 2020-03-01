@@ -4,7 +4,6 @@
  * Author: Dorian Galvez-Lopez
  * Description: feature vector
  * License: see the LICENSE.txt file
- *
  */
 
 #ifndef __D_T_FEATURE_VECTOR__
@@ -16,11 +15,18 @@
 
 #include "DBoW2/BowVector.h"
 
+#ifdef _MSC_VER
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT
+#endif
+
 namespace DBoW2 {
 
-/// Vector of nodes with indexes of local features
-class FeatureVector: 
-  public std::map<NodeId, std::vector<unsigned int> >
+/**
+ * Vector of nodes with indexes of local features
+ */
+class DLL_EXPORT FeatureVector: public std::map<NodeId, std::vector<unsigned int> >
 {
 public:
 
