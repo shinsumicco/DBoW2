@@ -67,7 +67,7 @@ if(BUILD_DBoW2)
 
   # set output properties
   set_target_properties(DBoW2 PROPERTIES
-    OUTPUT_NAME  "libdbow2"
+    OUTPUT_NAME  "dbow2"
     LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 
   # include libraries

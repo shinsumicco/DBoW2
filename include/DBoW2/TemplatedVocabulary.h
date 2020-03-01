@@ -38,7 +38,7 @@ namespace DBoW2 {
  * @param F class of descriptor functions
  */
 template<class TDescriptor, class F>
-class __declspec(dllexport) TemplatedVocabulary
+class DLL_EXPORT TemplatedVocabulary
 {		
 public:
   
