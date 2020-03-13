@@ -1,4 +1,4 @@
-find_library(DBoW2_LIBRARY DBoW2
+find_library(DBoW2_LIBRARY dbow2
     PATHS "@CMAKE_INSTALL_PREFIX@/lib"
 )
 find_path(DBoW2_INCLUDE_DIR DBoW2/BowVector.h DBoW2/FeatureVector.h
