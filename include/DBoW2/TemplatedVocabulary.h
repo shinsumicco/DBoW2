@@ -445,6 +445,9 @@ protected:
   //! Words of the vocabulary (tree leaves)
   //! this condition holds: m_words[wid]->word_id == wid
   std::vector<Node*> m_words;
+    
+  //! Block of descriptor memory with one row being the descriptor for a given node
+  cv::Mat m_descriptors;
 };
 
 // --------------------------------------------------------------------------
@@ -1388,10 +1391,11 @@ void TemplatedVocabulary<TDescriptor, F>::loadFromBinaryFile(const std::string& 
   m_nodes.clear();
   m_nodes.resize(n_nodes);
   m_nodes.at(0).id = 0;
+    
+  m_descriptors = cv::Mat(n_nodes, F::L, CV_8U);
 
   char* buf = new char[node_size];
   unsigned int n_id = 1;
-  cv::Mat descriptors = cv::Mat(n_nodes, F::L, CV_8U);
 
   while (!ifs.eof()) {
     ifs.read(buf, node_size);
@@ -1400,7 +1404,7 @@ void TemplatedVocabulary<TDescriptor, F>::loadFromBinaryFile(const std::string& 
 
     m_nodes.at(n_id).parent = *ptr;
     m_nodes.at(m_nodes.at(n_id).parent).children.push_back(n_id);
-    m_nodes.at(n_id).descriptor = descriptors.row(n_id);
+    m_nodes.at(n_id).descriptor = m_descriptors.row(n_id);
 
     memcpy(m_nodes.at(n_id).descriptor.data, buf + 4, F::L);
     m_nodes.at(n_id).weight = *reinterpret_cast<float*>(buf + 4 + F::L);
