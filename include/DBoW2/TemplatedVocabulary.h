@@ -1391,6 +1391,7 @@ void TemplatedVocabulary<TDescriptor, F>::loadFromBinaryFile(const std::string& 
 
   char* buf = new char[node_size];
   unsigned int n_id = 1;
+  cv::Mat descriptors = cv::Mat(n_nodes, F::L, CV_8U);
 
   while (!ifs.eof()) {
     ifs.read(buf, node_size);
@@ -1399,7 +1400,7 @@ void TemplatedVocabulary<TDescriptor, F>::loadFromBinaryFile(const std::string& 
 
     m_nodes.at(n_id).parent = *ptr;
     m_nodes.at(m_nodes.at(n_id).parent).children.push_back(n_id);
-    m_nodes.at(n_id).descriptor = cv::Mat(1, F::L, CV_8U);
+    m_nodes.at(n_id).descriptor = descriptors.row(n_id);
 
     memcpy(m_nodes.at(n_id).descriptor.data, buf + 4, F::L);
     m_nodes.at(n_id).weight = *reinterpret_cast<float*>(buf + 4 + F::L);
