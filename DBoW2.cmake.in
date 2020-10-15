@@ -7,3 +7,8 @@ find_path(DBoW2_INCLUDE_DIR DBoW2/BowVector.h DBoW2/FeatureVector.h
 set(DBoW2_LIBS ${DBoW2_LIBRARY})
 set(DBoW2_LIBRARIES ${DBoW2_LIBRARY})
 set(DBoW2_INCLUDE_DIRS ${DBoW2_INCLUDE_DIR})
+
+#load dbow targets
+include(CMakeFindDependencyMacro)
+find_dependency(OpenCV @OpenCV_VERSION@ EXACT)
+include(${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@-targets.cmake)

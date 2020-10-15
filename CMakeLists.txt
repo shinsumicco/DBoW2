@@ -47,7 +47,7 @@ if(BUILD_DBoW2)
     src/FORB.cpp
     src/QueryResults.cpp
     src/ScoringObject.cpp)
-
+  add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
   # set compile options
   if(BUILD_SHARED_LIBS)
     target_compile_options(DBoW2 PRIVATE
@@ -71,19 +71,25 @@ if(BUILD_DBoW2)
     LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 
   # include libraries
-  target_include_directories(DBoW2 PRIVATE ${OpenCV_INCLUDE_DIRS})
-
+  #target_include_directories(DBoW2 PRIVATE ${OpenCV_INCLUDE_DIRS})
+  target_include_directories(${PROJECT_NAME} PUBLIC 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/DBoW2>
+    $<INSTALL_INTERFACE:include/>
+    $<INSTALL_INTERFACE:include/DBoW2>)
   # link libraries
   target_link_libraries(DBoW2 PRIVATE ${OpenCV_LIBS})
 
   # install
   install(DIRECTORY include/DBoW2
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
-  install(TARGETS DBoW2
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+    DESTINATION include)
+  install(TARGETS DBoW2 EXPORT ${PROJECT_NAME}-targets 
+    DESTINATION lib)
   configure_file(DBoW2.cmake.in ${PROJECT_BINARY_DIR}/DBoW2Config.cmake @ONLY) 
   install(FILES ${PROJECT_BINARY_DIR}/DBoW2Config.cmake
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake/DBoW2)
+  install(EXPORT ${PROJECT_NAME}-targets DESTINATION lib/cmake/${PROJECT_NAME}
+    NAMESPACE ${PROJECT_NAME}::)
 endif(BUILD_DBoW2)
 
 # build utilities
